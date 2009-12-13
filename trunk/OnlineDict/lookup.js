@@ -11,6 +11,12 @@ document.onkeydown=function(e) {
 
 body.addEventListener("mouseup",OnDictEvent, false);
 
+function pin() {
+  alert(window.location.href);
+  last_frame = null;
+  last_div = null;
+}
+
 function OnCheckCloseWindow() {
   if (last_frame != null) {
     body.removeChild(last_frame);
@@ -67,10 +73,12 @@ function createPopUp(word, x, y, screenX, screenY) {
   
   var div_toolbar = document.createElement('div');
   //div_toolbar.src = 'http://dict.cn/mini.php?q=' + escape(word);
-  var imgURL = chrome.extension.getURL("close.png");
-  div_toolbar.innerHTML = "<img id='close_img' src='" + imgURL +"'>";
+  div_toolbar.innerHTML = "<img id='close_img' src='" + chrome.extension.getURL("pin.png") + "' onclick='pin();'>"
+   + "<img id='close_img' src='" + chrome.extension.getURL("disable.png") +"'>"
+   + "<img id='close_img' src='" + chrome.extension.getURL("close.png") +"'>";
   div_toolbar.style.left = x + 'px';
   div_toolbar.style.top = y + div_height*3/4 + frame_height + 'px';
+  div_toolbar.style.align = 'right';
   div_toolbar.style.position = 'absolute';
   div_toolbar.style.width = frame.style.width;  
   div_toolbar.style.height = '20px';
