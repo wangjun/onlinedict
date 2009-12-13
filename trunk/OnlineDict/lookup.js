@@ -1,29 +1,31 @@
 ﻿var body = document.getElementsByTagName("body")[0];
 var last_frame = null;
+var last_div = null;
+
+document.onkeydown=function(e) {
+  e=e || window.event;
+  var key=e.keyCode || e.which;
+  //alert(key);
+  OnCheckCloseWindow();
+}
 
 body.addEventListener("mouseup",OnDictEvent, false);
-body.addEventListener("keypress ",OnCheckCloseWindow, false);
-//body.addEventListener("click",OnDictEvent, false);
-//body.addEventListener("mousedown",OnCheckCloseWindow, false);
 
-function OnCheckCloseWindow(e) {
+function OnCheckCloseWindow() {
   if (last_frame != null) {
     body.removeChild(last_frame);
+    body.removeChild(last_div);
     last_frame = null;
-    return;
+    return true;
   }
+  return false
 }
 
 function OnDictEvent(e) {
-  if (last_frame != null) {
-    body.removeChild(last_frame);
-    last_frame = null;
+  if (OnCheckCloseWindow()) {
     return;
   }
-  
-  //var date = new Date();
-  //var current_time = date.getTime();
-  
+    
   if (e.ctrlKey) {
     return;
   }  
@@ -33,36 +35,48 @@ function OnDictEvent(e) {
     createPopUp(word, e.pageX, e.pageY, e.screenX, e.screenY);
     return;
   }
-    
-  if (last_frame != null) {
-    body.removeChild(last_frame);
-    last_frame = null;
-    return;
-  }
 }
 
 function createPopUp(word, x, y, screenX, screenY) {
-  if (last_frame != null) {
-    body.removeChild(last_frame);
-    last_frame = null;
+  if (OnCheckCloseWindow()) {
     return;
   }
+  var frame_height = 180;
+  var frame_width = 200;
+  var div_height = 20;
+  
   frame = document.createElement('iframe');
   //frame.src = 'http://dict.cn/mini.php?q=' + escape(word);
   frame.src = 'http://dict.cn/mini.php?q=' + word;
   frame.id = 'OnlineDict';
- 
-  body.appendChild(frame);
   
   frame.style.left = x + 'px';
-  frame.style.top = y + 'px';
+  frame.style.top = y + div_height*3/4 + 'px';
   frame.style.position = 'absolute';
-  frame.style.width = '200px';
+  frame.style.width = frame_width + 'px';
+  frame.style.height = frame_height + 'px';
   frame.style.border = '1px solid #3A3';
   //frame.style.height = '80px';
   //frame.style.backgroundColor = '#7CBE80';
   frame.style.backgroundColor = '#90EE90';
   //frame.style.backgroundColor = '#008000';
+  body.appendChild(frame);
   
   last_frame = frame;
+  
+  
+  var div_toolbar = document.createElement('div');
+  //div_toolbar.src = 'http://dict.cn/mini.php?q=' + escape(word);
+  var imgURL = chrome.extension.getURL("close.png");
+  div_toolbar.innerHTML = "<img id='close_img' src='" + imgURL +"'>";
+  div_toolbar.style.left = x + 'px';
+  div_toolbar.style.top = y + div_height*3/4 + frame_height + 'px';
+  div_toolbar.style.position = 'absolute';
+  div_toolbar.style.width = frame.style.width;  
+  div_toolbar.style.height = '20px';
+  div_toolbar.style.border = '1px solid #3A3';
+  div_toolbar.style.backgroundColor = '#3A3';
+  body.appendChild(div_toolbar);
+  last_div = div_toolbar;
+  
 }
