@@ -1,7 +1,13 @@
 ﻿{"name": "OnlineDict-Chrome翻译助手",
  "version": "1.0",
  "description": "双击页面中的单词，会出现一个小翻译窗，显示它的解释。\r\n主页：http://code.google.com/p/onlinedict，建议定时更新",
- "icons": { "128": "icon.png"},
+ "icons": { "128": "logo.png"},
+ "options_page": "options.htm",
+ "browser_action": {
+    "default_icon": "logo_small.png",
+    "popup": "options.htm",
+    "default_title":"OnlineDict-Chrome翻译助手"
+  },
  "update_url": "http://myhost.com/mytestextension/updates.xml",
  "content_scripts": [{
     "matches": ["http://*/*", "https://*/*"],
