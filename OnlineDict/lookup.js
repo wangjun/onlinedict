@@ -1,8 +1,22 @@
 ﻿var body = document.getElementsByTagName("body")[0];
+var last_word = null;
 var last_frame = null;
 var last_div = null;
 var g_bDisable = false;
 var div_num = 0;
+
+var lstWords = [];
+//保留当前翻译窗口
+function getWordIndex(word) {
+  for(var i=lstWords.length-1;i>=0;i--)
+  {
+    if(lstWords[i]==word)
+    {
+        return i;
+    }
+  }
+  return -100;
+}
 
 //按下键盘时，关闭窗口
 document.onkeydown=function(e) {
@@ -17,7 +31,7 @@ body.addEventListener("mouseup",OnDictEvent, false);
 
 //保留当前翻译窗口
 function tool_pin() {
-  //alert(window.location.href);
+  lstWords.push(last_word); 
   last_frame = null;
   last_div = null;
 }
@@ -59,6 +73,14 @@ function OnDictEvent(e) {
   }
   var word = String(window.getSelection());
   word = word.replace(/^\s*/, "").replace(/\s*$/, "");
+  
+  //刚取过的词，再次点击不弹出（主要是为了避免点击“钉住”功能时仍然弹出）。
+  //if(getWordIndex(word)==(div_num-1))
+  if(getWordIndex(word)>=0)
+  {
+    return;
+  }
+  
   if (word != '') {
     createPopUp(word, e.pageX, e.pageY, e.screenX, e.screenY);
     return;
@@ -70,6 +92,9 @@ function createPopUp(word, x, y, screenX, screenY) {
   if (OnCheckCloseWindow()) {
     return;
   }
+  
+  last_word = word;
+  
   var frame_height = 180;
   var frame_width = 200;
   var div_height = 20;
@@ -116,5 +141,4 @@ function createPopUp(word, x, y, screenX, screenY) {
   document.getElementById('tool_disable' + div_num).addEventListener("mouseup",tool_disable, false);
   
   div_num++;
-  
 }
