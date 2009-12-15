@@ -85,9 +85,10 @@ function createPopUp(word, x, y, screenX, screenY) {
   frame.style.width = frame_width + 'px';
   frame.style.height = frame_height + 'px';
   frame.style.border = '1px solid #3A3';
-  //frame.style.height = '80px';
+  frame.style.zIndex = '65535';
+  frame.style.backgroundColor = '#DCF6DB';
   //frame.style.backgroundColor = '#7CBE80';
-  frame.style.backgroundColor = '#90EE90';
+  //frame.style.backgroundColor = '#90EE90';
   //frame.style.backgroundColor = '#008000';
   body.appendChild(frame);
   
@@ -107,6 +108,7 @@ function createPopUp(word, x, y, screenX, screenY) {
   div_toolbar.style.height = '20px';
   div_toolbar.style.border = '1px solid #3A3';
   div_toolbar.style.backgroundColor = '#3A3';
+  div_toolbar.style.zIndex = '65535';
   body.appendChild(div_toolbar);
   last_div = div_toolbar;
   
