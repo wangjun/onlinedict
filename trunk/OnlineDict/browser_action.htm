@@ -1,6 +1,7 @@
 ﻿<html>
 <head><title>My Test Extension Options</title></head>
 <script type="text/javascript">
+
 // Saves options to localStorage.
 function save_options() {
   var select = document.getElementById("color");
@@ -17,7 +18,14 @@ function save_options() {
 
 // Restores select box state to saved value from localStorage.
 function restore_options() {
-  document.getElementById("test_div").innerHTML = localStorage["favorite_color"];
+    
+chrome.tabs.getSelected( null , function(tab) {
+  url = (tab.url);
+  title = (tab.title);
+  //alert(tab.URL);
+  document.getElementById("test_div").innerHTML = (tab.url)+(tab.title);
+});
+  //document.getElementById("test_div").innerHTML = localStorage["favorite_color"];
   var favorite = localStorage["favorite_color"];
   if (!favorite) {
     return;
