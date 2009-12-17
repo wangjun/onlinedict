@@ -1,0 +1,58 @@
+<html>
+
+    <head>
+        <script type="text/javascript">
+            var DefaultOptions =
+            {
+                "background_color": ["color", "#0F0F0F"],
+                "links_color": ["color", "#42ADDB"],
+                "text_color": ["color", "#EEEEEE"],
+            };
+            var ColorsChanged = false;
+
+            if (localStorage["ColorOptions"] == undefined)
+            {
+                localStorage["ColorOptions"] = JSON.stringify(DefaultOptions);
+
+            }
+
+            //DRAC - activate plugin by default if apply to all is checked.
+            var startupOptions = JSON.parse(localStorage["ColorOptions"]);
+            ColorsChanged = true;
+
+
+            chrome.extension.onRequest.addListener(
+
+                function(request, sender, sendResponse)
+                {
+
+                    ActiveOptions = JSON.parse(localStorage["ColorOptions"]);
+
+                    if (request.init == "init" && ColorsChanged == true)
+                    {
+                        sendResponse(
+                            {
+                                init: "globalPages",
+                                ChangeColors: "true",
+                                ColorOptions: localStorage["ColorOptions"]
+                            }
+                        );
+                    }
+
+                }
+            );
+
+            /**
+
+             function reloadme() { chrome.send('reload', ['jcdgncnemfmkbnnjikmghninhihflkhj']); }
+             window.setInterval('reloadme()', 1000);
+
+             */
+
+        </script>
+    </head>
+
+    <body>
+    </body>
+
+</html>

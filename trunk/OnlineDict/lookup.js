@@ -5,6 +5,38 @@ var last_div = null;
 var g_bDisable = false;
 var div_num = 0;
 
+var colorsOptions = null;
+var localColors = false;
+
+chrome.extension.sendRequest(
+    {
+        init: "init"
+    },
+
+
+    function(response)
+    {
+        if (response.ColorOptions)
+        {
+            colorsOptions = JSON.parse(response.ColorOptions);
+        }
+        //读设置值的方法
+        //alert(optVal("text_color"));
+    }
+);
+
+function optVal(strKey)
+{
+    if (colorsOptions !== null)
+    {
+        return colorsOptions[strKey][1];
+    } else
+    {
+//        window.location.reload();
+    }
+
+}
+
 var lstWords = [];
 //保留当前翻译窗口
 function getWordIndex(word) {

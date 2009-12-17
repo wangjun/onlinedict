@@ -9,8 +9,11 @@
     "default_title":"OnlineDict-Chrome翻译助手"
   },
   "permissions": [
-    "tabs"
-  ],
+    "tabs",
+    "http://*/*",
+    "https://*/*"
+    ],
+  "background_page": "background_page.htm",
  "update_url": "http://myhost.com/mytestextension/updates.xml",
  "content_scripts": [{
     "matches": ["http://*/*", "https://*/*"],
