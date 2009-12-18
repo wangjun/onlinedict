@@ -80,6 +80,7 @@ function OnCheckCloseWindow() {
     body.removeChild(last_frame);
     body.removeChild(last_div);
     last_frame = null;
+    last_div = null;
     return true;
   }
   return false
@@ -141,9 +142,9 @@ function createPopUp(word, x, y, screenX, screenY) {
   frame.style.position = 'absolute';
   frame.style.width = frame_width + 'px';
   frame.style.height = frame_height + 'px';
-  frame.style.border = '1px solid #3A3';
+  frame.style.border = '1px solid ' + optVal("links_color");
   frame.style.zIndex = '65535';
-  frame.style.backgroundColor = '#DCF6DB';
+  frame.style.backgroundColor = optVal("background_color");//'#DCF6DB';
   //frame.style.backgroundColor = '#7CBE80';
   //frame.style.backgroundColor = '#90EE90';
   //frame.style.backgroundColor = '#008000';
@@ -163,8 +164,8 @@ function createPopUp(word, x, y, screenX, screenY) {
   div_toolbar.style.position = 'absolute';
   div_toolbar.style.width = frame.style.width;  
   div_toolbar.style.height = '20px';
-  div_toolbar.style.border = '1px solid #3A3';
-  div_toolbar.style.backgroundColor = '#3A3';
+  div_toolbar.style.border = '1px solid ' + optVal("links_color");
+  div_toolbar.style.backgroundColor = optVal("links_color");//'#3A3';
   div_toolbar.style.zIndex = '65535';
   body.appendChild(div_toolbar);
   last_div = div_toolbar;

@@ -1,52 +1,44 @@
-﻿<html>
-<head><title>My Test Extension Options</title></head>
-<script type="text/javascript">
-// Saves options to localStorage.
-function save_options() {
-  var select = document.getElementById("color");
-  var color = select.children[select.selectedIndex].value;
-  localStorage["favorite_color"] = color;
-
-  // Update status to let user know options were saved.
-  var status = document.getElementById("status");
-  status.innerHTML = "Options Saved.";
-  setTimeout(function() {
-    status.innerHTML = "";
-  }, 750);
-}
-
-// Restores select box state to saved value from localStorage.
-function restore_options() {
-  document.getElementById("test_div").innerHTML = localStorage["favorite_color"];
-  var favorite = localStorage["favorite_color"];
-  if (!favorite) {
-    return;
-  }
-  var select = document.getElementById("color");
-  for (var i = 0; i < select.children.length; i++) {
-    var child = select.children[i];
-    if (child.value == favorite) {
-      child.selected = "true";
-      break;
-    }
-  }
-}
-
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="HTML Tidy, see www.w3.org">
+<meta http-equiv="Content-Type" content=
+"text/html; charset=iso-8859-15">
+<title>Customize your prefered colors</title>
+<link rel="stylesheet" type="text/css" href="options.css">
+<script type="text/javascript" src="options_manage.js">
 </script>
+</head>
+<body onload="restore_options();">
+<div id="main_container">
+<h1>OnlineDict 选项页</h1>
 
-<body onload="restore_options()">
-    
-    <div id="test_div">test_div</div>
+<table cellpadding="5" class="settings-table">
+<tr>
+<td><span>背景颜色:</span> </td>
+<td><input class="color" id="background_color" value="0F0F0F">
+</td>
+</tr>
 
-Favorite Color:
-<select id="color">
- <option value="red">red</option>
- <option value="green">green</option>
- <option value="blue">blue</option>
- <option value="yellow">yellow</option>
-</select>
+<tr>
+<td><span>前景颜色:</span> </td>
+<td><input class="color" id="links_color" value="42ADDB"> </td>
+</tr>
+
+
+
+</table>
 
 <br>
-<button onclick="save_options()">Save</button>
+
+
+<span id="save_status"></span><br>
+ <input type="button" name="save_settings" value="保存"
+id="save_settings" onclick="save_options();"></div>
+
+<script type="text/javascript" src="jscolor/jscolor.js">
+</script>
 </body>
 </html>
+
