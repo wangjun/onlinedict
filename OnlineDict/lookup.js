@@ -78,7 +78,10 @@ function tool_disable() {
 function OnCheckCloseWindow() {
   if (last_frame != null) {
     body.removeChild(last_frame);
-    body.removeChild(last_div);
+    if(last_div)
+    {
+      body.removeChild(last_div);
+    }
     last_frame = null;
     last_div = null;
     return true;
@@ -151,6 +154,7 @@ function createPopUp(word, x, y, screenX, screenY) {
   body.appendChild(frame);
   
   last_frame = frame;
+  return;
   
   
   var div_toolbar = document.createElement('div');
