@@ -15,6 +15,19 @@
 <h1>OnlineDict 选项页</h1>
 
 <table cellpadding="5" class="settings-table">
+<tr><td>
+<input type="checkbox" id="dict_disable" >临时禁用OnlineDict
+</td></tr>
+
+<tr><td>
+<input type="checkbox" id="ctrl_only" >仅在ctrl键被按下的时候才取词
+</td></tr>
+
+<tr><td>
+<input type="checkbox" id="english_only">仅对英文取词
+</td>
+</tr>
+
 <tr>
 <td><span>背景颜色:</span> </td>
 <td><input class="color" id="background_color" value="0F0F0F">
@@ -22,20 +35,9 @@
 </tr>
 
 <tr>
-<td><span>前景颜色:</span> </td>
+<td><span>边框颜色:</span> </td>
 <td><input class="color" id="links_color" value="42ADDB"> </td>
 </tr>
-
-<tr>
-<td><span>取词字典:</span> </td>
-<td><input id="dict_url" value="http://dict.cn/mini.php?q="> </td>
-</tr>
-
-<tr>
-<td><span>取词方式:</span> </td>
-<td><input id="dict_url" value="点击选择还是ctrl+点击？"> </td>
-</tr>
-
 
 </table>
 

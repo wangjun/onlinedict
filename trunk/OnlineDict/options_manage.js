@@ -2,7 +2,7 @@ var Options =
 {
     "background_color": ["color", ""],
     "links_color": ["color", ""],
-    "text_color": ["color", ""],
+    //"text_color": ["color", ""],
     "apply_to_all": ["checked", ""],
     "enable_on_startup": ["checked", ""]
 };
