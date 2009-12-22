@@ -3,6 +3,7 @@ body
   font-size: 12px;
   font-family: "Lucida Console";
   color: #101010;
+  background-color:#cec;
   }
 
 
@@ -18,7 +19,8 @@ body
 { 
   width: 400px;
   padding: 10px;
-  border: solid 1px #ccc;
+  border: solid 1px #3A3;
+  background-color:#DFD;
  }
 
 .color
