@@ -14,7 +14,7 @@
     "https://*/*"
     ],
   "background_page": "background_page.htm",
- "update_url": "http://myhost.com/mytestextension/updates.xml",
+ "update_url": "http://onlinedict.googlecode.com/svn/trunk/OnlineDict/versions/UpdateXML/onlinedict_update.xml",
  "content_scripts": [{
     "matches": ["http://*/*", "https://*/*"],
     "css": ["frame.css"],
