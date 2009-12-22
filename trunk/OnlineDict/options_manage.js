@@ -3,19 +3,22 @@ var Options =
     "background_color": ["color", ""],
     "links_color": ["color", ""],
     //"text_color": ["color", ""],
-    "apply_to_all": ["checked", ""],
-    "enable_on_startup": ["checked", ""]
+    "dict_disable": ["checked", ""],
+    "ctrl_only": ["checked", ""],
+    "english_only": ["checked", ""]
 };
 
 function save_options()
 {
     for (key in Options)
     {
-
         switch (Options[key][0])
         {
         case "color":
             Options[key][1] = "#" + document.getElementById(key).value;
+            break;
+        case "checked":
+            Options[key][1] = document.getElementById(key).checked;
             break;
         }
 
@@ -28,6 +31,7 @@ function save_options()
 function restore_options()
 {
     var localOptions = JSON.parse(localStorage["ColorOptions"]);
+    //alert(localStorage["ColorOptions"]);
     for (key in localOptions)
     {
         optionValue = localOptions[key];
@@ -40,8 +44,8 @@ function restore_options()
                 element.value = localOptions[key][1];
                 switch (localOptions[key][0])
                 {
-                case "check":
-                    if (localOptions[key][1] == "checked") element.checked = true;
+                case "checked":
+                    if (localOptions[key][1]) element.checked = true;
                     else element.checked = false;
                     break;
                 }
