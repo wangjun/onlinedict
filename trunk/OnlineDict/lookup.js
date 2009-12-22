@@ -52,6 +52,10 @@ function getWordIndex(word) {
 
 //按下键盘时，关闭窗口
 document.onkeydown=function(e) {
+  if(optVal("ctrl_only")) //避免窗口一出现就消失
+  {
+    return;
+  }
   e=e || window.event;
   var key=e.keyCode || e.which;
   //alert(key);
@@ -94,10 +98,22 @@ function OnDictEvent(e) {
   if (OnCheckCloseWindow()) {
     return;
   }
-    
-  if (e.ctrlKey) {
+  
+  //alert(optVal("dict_disable"));
+  if(optVal("dict_disable"))
+  {
     return;
-  }  
+  }
+   
+  //两个同为true或者同为false方可  
+  if(!optVal("ctrl_only") && e.ctrlKey)
+  {
+    return;
+  }
+  if(optVal("ctrl_only") && !e.ctrlKey)
+  {
+    return;
+  }
   if(g_bDisable)
   {
     return;
