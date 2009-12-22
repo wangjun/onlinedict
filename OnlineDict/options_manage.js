@@ -3,9 +3,9 @@ var Options =
     "background_color": ["color", ""],
     "links_color": ["color", ""],
     //"text_color": ["color", ""],
-    "dict_disable": ["checked", ""],
-    "ctrl_only": ["checked", ""],
-    "english_only": ["checked", ""]
+    "dict_disable": ["checked", false],
+    "ctrl_only": ["checked", false],
+    "english_only": ["checked", false]
 };
 
 function save_options()
