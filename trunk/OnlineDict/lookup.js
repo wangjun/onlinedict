@@ -7,13 +7,16 @@ var div_num = 0;
 
 var colorsOptions = null;
 var localColors = false;
+var colors=[["#DCF6DB","#3A3"],
+    ["#48BDF0","#3589AD"],
+    ["#F2F2F2","#808080"],
+    ["#E9ACF2","#F57A3D"]
+];
 
 chrome.extension.sendRequest(
     {
         init: "init"
     },
-
-
     function(response)
     {
         if (response.ColorOptions)
@@ -176,9 +179,9 @@ function createPopUp(word, x, y, screenX, screenY) {
   frame.style.position = 'absolute';
   frame.style.width = frame_width + 'px';
   frame.style.height = frame_height + 'px';
-  frame.style.border = '1px solid ' + optVal("links_color");
+  frame.style.border = '1px solid ' + colors[optVal("color_type")][1];//optVal("links_color");
   frame.style.zIndex = '65535';
-  frame.style.backgroundColor = optVal("background_color");//'#DCF6DB';
+  frame.style.backgroundColor = colors[optVal("color_type")][0];//'#DCF6DB';
   //frame.style.backgroundColor = '#7CBE80';
   //frame.style.backgroundColor = '#90EE90';
   //frame.style.backgroundColor = '#008000';
@@ -199,8 +202,8 @@ function createPopUp(word, x, y, screenX, screenY) {
   div_toolbar.style.position = 'absolute';
   div_toolbar.style.width = frame.style.width;  
   div_toolbar.style.height = '20px';
-  div_toolbar.style.border = '1px solid ' + optVal("links_color");
-  div_toolbar.style.backgroundColor = optVal("links_color");//'#3A3';
+  div_toolbar.style.border = '1px solid ' + colors[optVal("color_type")][1];
+  div_toolbar.style.backgroundColor = colors[optVal("color_type")][1];//'#3A3';
   div_toolbar.style.zIndex = '65535';
   body.appendChild(div_toolbar);
   last_div = div_toolbar;
