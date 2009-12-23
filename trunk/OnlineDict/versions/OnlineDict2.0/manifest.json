@@ -1,0 +1,26 @@
+﻿{"name": "OnlineDict-Chrome翻译助手",
+ "version": "2.0",
+ "description": "双击页面中的单词，会出现一个小翻译窗，显示它的解释。\r\n主页：http://code.google.com/p/onlinedict",
+ "icons": { "128": "logo.png"},
+ "options_page": "options.htm",
+ "browser_action": {
+    "default_icon": "logo_small.png",
+    "popup": "options.htm",
+    "default_title":"OnlineDict-Chrome翻译助手"
+  },
+  "permissions": [
+    "tabs",
+    "http://*/*",
+    "https://*/*"
+    ],
+  "background_page": "background_page.htm",
+ "update_url": "http://onlinedict.googlecode.com/svn/trunk/OnlineDict/versions/UpdateXML/onlinedict_update.xml",
+ "content_scripts": [{
+    "matches": ["http://*/*", "https://*/*"],
+    "css": ["frame.css"],
+    "js": ["lookup.js"]
+  }, {
+    "matches": ["http://dict.cn/mini.php?q=?*&source=unofficial_chrome_ext*"],
+    "js": ["cleanup.js"]
+  }]
+}
