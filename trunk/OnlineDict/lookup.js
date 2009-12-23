@@ -50,6 +50,13 @@ function getWordIndex(word) {
   return -100;
 }
 
+function isEnglish(s)
+{  
+    var patrn=/[\--~]+/;
+    if (!patrn.exec(s)) return false  
+    return true  
+}  
+
 //按下键盘时，关闭窗口
 document.onkeydown=function(e) {
   if(optVal("ctrl_only")) //避免窗口一出现就消失
@@ -125,6 +132,14 @@ function OnDictEvent(e) {
   }
   var word = String(window.getSelection());
   word = word.replace(/^\s*/, "").replace(/\s*$/, "");
+  
+  if(optVal("english_only"))
+  {
+    if(!isEnglish(word))
+    {
+        return;
+    }
+  }
   
   //刚取过的词，再次点击不弹出（主要是为了避免点击“钉住”功能时仍然弹出）。
   //if(getWordIndex(word)==(div_num-1))
