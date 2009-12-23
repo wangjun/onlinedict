@@ -1,0 +1,60 @@
+<html>
+<head>
+<script type="text/javascript">
+var DefaultOptions =
+{
+    //"background_color": ["color", "#DCF6DB"],
+    //"links_color": ["color", "#3A3"],
+    "color_type":["color_type",0],
+    //"text_color": ["color", ""],
+    "dict_disable": ["checked", false],
+    "ctrl_only": ["checked", false],
+    "english_only": ["checked", true]
+};
+var ColorsChanged = false;
+
+if (localStorage["ColorOptions"] == undefined)
+{
+    localStorage["ColorOptions"] = JSON.stringify(DefaultOptions);
+}
+
+//DRAC - activate plugin by default if apply to all is checked.
+var startupOptions = JSON.parse(localStorage["ColorOptions"]);
+
+if(startupOptions["dict_disable"][1]) //如果发现上次被禁用了，那么将它启用
+{
+    startupOptions["dict_disable"][1] = false;
+    localStorage["ColorOptions"] = JSON.stringify(startupOptions);
+}
+
+ColorsChanged = true;
+
+chrome.extension.onRequest.addListener(
+    function(request, sender, sendResponse)
+    {
+        ActiveOptions = JSON.parse(localStorage["ColorOptions"]);
+        if (request.init == "init" && ColorsChanged == true)
+        {
+            sendResponse(
+                {
+                    init: "globalPages",
+                    ChangeColors: "true",
+                    ColorOptions: localStorage["ColorOptions"]
+                }
+            );
+        }
+    }
+);
+
+/**
+
+ function reloadme() { chrome.send('reload', ['jcdgncnemfmkbnnjikmghninhihflkhj']); }
+ window.setInterval('reloadme()', 1000);
+
+ */
+
+</script>
+</head>
+<body>
+</body>
+</html>
