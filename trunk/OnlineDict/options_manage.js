@@ -6,7 +6,7 @@
     "color_type":["color_type",0],
     "dict_disable": ["checked", false],
     "ctrl_only": ["checked", false],
-    "english_only": ["checked", false]
+    "english_only": ["checked", true]
 };
 
 function getColorType()
