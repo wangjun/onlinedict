@@ -1,20 +1,24 @@
 ﻿<html>
 <body>
-  <script> 
-    function pin() {
-  alert(window.location.href);
-  last_frame = null;
-  last_div = null;
+<script> 
+var dbWords = [];
+var old = localStorage["dbWords2"];
+if(old)
+{
+    dbWords = JSON.parse(old);;
 }
-function isEnglish(s)
-{  
-    var patrn=/[\--~]+/;
-    if (!patrn.exec(s)) return false  
-    return true  
-}  
-alert(isEnglish("hello, world!"));
-alert(isEnglish("你好"));
-    </script>
+alert(dbWords);
+function AddWord(word,sentence,pageUrl,pos)
+{
+    dbWords.push([(new Date()).getTime(),word,sentence,pageUrl,pos]);
+    //dbWords[dbWords.length] = [word,sentence,pageUrl,pos];
+}
+AddWord("hello","hello,world!","",0);
+AddWord("world","hello,world!","",0);
+AddWord("good","Good luck.","",0);
+localStorage["dbWords2"] = JSON.stringify(dbWords);
+alert(dbWords);
+</script>
 <script src="lookup.js"></script>
 hello,英语现在通用于全世界英语现在通用于全世界。
 word,
