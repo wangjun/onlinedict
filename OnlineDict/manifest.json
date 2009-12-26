@@ -5,7 +5,7 @@
  "options_page": "options.htm",
  "browser_action": {
     "default_icon": "logo_small.png",
-    "popup": "options.htm",
+    "popup": "remember.htm",
     "default_title":"OnlineDict-Chrome翻译助手"
   },
   "permissions": [

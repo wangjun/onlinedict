@@ -19,6 +19,7 @@ chrome.extension.sendRequest(
     },
     function(response)
     {
+      //alert(response);
         if (response.ColorOptions)
         {
             colorsOptions = JSON.parse(response.ColorOptions);
@@ -27,6 +28,25 @@ chrome.extension.sendRequest(
         //alert(optVal("text_color"));
     }
 );
+
+function SaveNewWord(w,s,purl,pos)
+{
+  chrome.extension.sendRequest(
+    {
+        init: "new",
+        word: w,
+        sentence:s,
+        wordurl: purl,
+        wordpos: pos
+        
+    },
+    function(response)
+    {
+      //alert("已保存！");
+    }
+);
+
+}
 
 function optVal(strKey)
 {
@@ -186,6 +206,8 @@ function createPopUp(word, x, y, screenX, screenY) {
   //frame.style.backgroundColor = '#90EE90';
   //frame.style.backgroundColor = '#008000';
   body.appendChild(frame);
+  
+  SaveNewWord(word,"","",0);
   
   last_frame = frame;
   return;
