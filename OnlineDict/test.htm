@@ -6,7 +6,7 @@ web,
 you,html,body,americian,pacific,hill,
 good bye,good night
 <br>
-<div id="div_words">aa</div>
+<div id="div_words" width = "50%"></div>
 <script> 
 var dbWords = [];
 var old = localStorage["dbWords2"];
@@ -24,18 +24,35 @@ AddWord("world","hello,world!","",0);
 AddWord("good","Good luck.","",0);
 localStorage["dbWords2"] = JSON.stringify(dbWords);
 
+function SetGood(id)
+{
+  //alert(id);
+  document.getElementById("div_newword_" + id).style.display = "none";
+}
 var wordHtm = "";
-for(var i=0;i<dbWords.length;i++)
+for(var i=dbWords.length-1;i>=0;i--)
 {
   d = (new Date(dbWords[i][0]));
   var s = (d.getMonth() + 1) + "/";
    s += d.getDate() + "/";
    s += d.getFullYear();
-  wordHtm += "<p>" + i + " " + s + " "+ dbWords[i][1] + "</p>";
+  var div = document.createElement("div");
+  div.id = "div_newword_" + i;
+  if(i%2==0)
+  {
+    div.style.background = '#DCF6DB';
+  }
+  //div.innerHTML= i + " " + s + " "+ dbWords[i][1];
+  div.innerHTML= "新词" + i + ": "+ dbWords[i][1] 
+  + "<input type='button' value='记住了' onclick='jscript:SetGood(" +  i + ");'/>"
+  + "<p>例句：" + dbWords[i][2] + "</p>";
+  //wordHtm += "<div bgcolor=>" +  + "</div>";
+  document.getElementById("div_words").appendChild(div);
+  document.getElementById("div_words").style.border = "1px solid #3A3";
+  document.getElementById("div_words").style.width = "50%";
 }
-document.getElementById("div_words").innerHTML = wordHtm;
+//document.getElementById("div_words").innerHTML = wordHtm;
 </script>
-<script src="lookup.js"></script>
 
 </body>
 </html>
