@@ -1,5 +1,7 @@
 <html>
 <head>
+<script type="text/javascript" src="newwords.js">
+</script>
 <script type="text/javascript">
 var DefaultOptions =
 {
@@ -40,6 +42,17 @@ chrome.extension.onRequest.addListener(
                     init: "globalPages",
                     ChangeColors: "true",
                     ColorOptions: localStorage["ColorOptions"]
+                }
+            );
+        }
+        else if(request.init == "new")
+        {
+          //alert(request.word);
+          AddWord(request.word,request.sentence,request.wordurl,request.wordpos);
+          sendResponse(
+                {
+                    init: "globalPages",
+                    saved: "ok"
                 }
             );
         }

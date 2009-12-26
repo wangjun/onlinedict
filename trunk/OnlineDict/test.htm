@@ -6,10 +6,12 @@ web,
 you,html,body,americian,pacific,hill,
 good bye,good night
 <br>
-<div id="div_words" width = "50%"></div>
+<div id="div_words" width = "50%">您最近查看的生词：</div>
+<br/>
+<div id="div_finished" width = "50%">您已经记住了以下单词：</div>
 <script> 
 var dbWords = [];
-var old = localStorage["dbWords2"];
+var old = localStorage["dbWords3"];
 if(old)
 {
     dbWords = JSON.parse(old);;
@@ -17,39 +19,65 @@ if(old)
 function AddWord(word,sentence,pageUrl,pos)
 {
     dbWords.push([(new Date()).getTime(),word,sentence,pageUrl,pos]);
+    localStorage["dbWords3"] = JSON.stringify(dbWords);
     //dbWords[dbWords.length] = [word,sentence,pageUrl,pos];
 }
-AddWord("hello","hello,world!","",0);
-AddWord("world","hello,world!","",0);
-AddWord("good","Good luck.","",0);
-localStorage["dbWords2"] = JSON.stringify(dbWords);
+/*AddWord("hello","hello,world!",0,"",0);
+AddWord("world","hello,world!",0,"",0);
+AddWord("good","Good luck.",0,"",0);
+*/
+function SaveWords()
+{
+  localStorage["dbWords3"] = JSON.stringify(dbWords);
+}
 
 function SetGood(id)
 {
   //alert(id);
   document.getElementById("div_newword_" + id).style.display = "none";
+  dbWords[id][3] = 1;
+  localStorage["dbWords3"] = JSON.stringify(dbWords);
 }
+
+document.getElementById("div_words").style.border = "1px solid #3A3";
+document.getElementById("div_words").style.width = "50%";
+document.getElementById("div_finished").style.border = "1px solid #3A3";
+document.getElementById("div_finished").style.width = "50%";
+
 var wordHtm = "";
 for(var i=dbWords.length-1;i>=0;i--)
 {
-  d = (new Date(dbWords[i][0]));
-  var s = (d.getMonth() + 1) + "/";
-   s += d.getDate() + "/";
-   s += d.getFullYear();
-  var div = document.createElement("div");
-  div.id = "div_newword_" + i;
-  if(i%2==0)
+  if(dbWords[i][3]==0)
   {
-    div.style.background = '#DCF6DB';
+    var d = new Date(dbWords[i][0]);
+    var s = (d.getMonth() + 1) + "/";
+     s += d.getDate() + "/";
+     s += d.getFullYear();
+    var div = document.createElement("div");
+    div.id = "div_newword_" + i;
+    if(i%2==0)
+    {
+      div.style.background = '#DCF6DB';
+    }
+    //div.innerHTML= i + " " + s + " "+ dbWords[i][1];
+    div.innerHTML= "新词" + i + ": "+ dbWords[i][1] 
+    + "<input type='button' value='记住了' onclick='jscript:SetGood(" +  i + ");'/>"
+    + "<p>例句：" + dbWords[i][2] + "</p>";
+    //wordHtm += "<div bgcolor=>" +  + "</div>";
+    document.getElementById("div_words").appendChild(div);
   }
-  //div.innerHTML= i + " " + s + " "+ dbWords[i][1];
-  div.innerHTML= "新词" + i + ": "+ dbWords[i][1] 
-  + "<input type='button' value='记住了' onclick='jscript:SetGood(" +  i + ");'/>"
-  + "<p>例句：" + dbWords[i][2] + "</p>";
-  //wordHtm += "<div bgcolor=>" +  + "</div>";
-  document.getElementById("div_words").appendChild(div);
-  document.getElementById("div_words").style.border = "1px solid #3A3";
-  document.getElementById("div_words").style.width = "50%";
+  else if(dbWords[i][3]==1)
+  {
+    var div = document.createElement("div");
+    div.id = "div_finish_" + i;
+    if(i%2==0)
+    {
+      div.style.background = '#DCF6DB';
+    }
+    //div.innerHTML= i + " " + s + " "+ dbWords[i][1];
+    div.innerHTML= dbWords[i][1];
+    document.getElementById("div_finished").appendChild(div);
+  }
 }
 //document.getElementById("div_words").innerHTML = wordHtm;
 </script>
