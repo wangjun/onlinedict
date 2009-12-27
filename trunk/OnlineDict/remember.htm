@@ -1,0 +1,87 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="HTML Tidy, see www.w3.org">
+<meta http-equiv="Content-Type" content=
+"text/html; charset=iso-8859-15">
+<title>OnlineDict 选项页</title>
+<link rel="stylesheet" type="text/css" href="options.css">
+<script type="text/javascript" src="options_manage.js">
+</script>
+</head>
+<body onload="restore_options();">
+<div id="main_container">
+<h1>OnlineDict 单词记忆助手</h1>
+
+<table cellpadding="5" class="settings-table">
+<tr><td valign="top">
+<div id="div_words" >您最近查看的生词：</div>
+</td>
+<td valign="top">
+<div id="div_finished" >您已经记住了以下单词：</div>
+</td>
+</tr>
+</table>
+
+<script type="text/javascript" src="newwords.js">
+</script>
+<script> 
+function SetGood(id)
+{
+  //alert(id);
+  document.getElementById("div_newword_" + id).style.display = "none";
+  AddRememberItem(id);
+  
+  dbWords[id][3] = 1;
+  localStorage["dbWords3"] = JSON.stringify(dbWords);
+}
+function AddRememberItem(i)
+{
+    var div = document.createElement("div");
+    div.id = "div_finish_" + i;
+    if(i%2==0)
+    {
+      div.style.background = '#cec';
+    }
+    div.innerHTML= i + ". " + dbWords[i][1];
+    document.getElementById("div_finished").appendChild(div);
+}
+
+//document.getElementById("div_words").style.border = "1px solid #3A3";
+//document.getElementById("div_words").style.width = "50%";
+//document.getElementById("div_finished").style.border = "1px solid #3A3";
+//document.getElementById("div_finished").style.width = "50%";
+
+var wordHtm = "";
+for(var i=dbWords.length-1;i>=0;i--)
+{
+  if(dbWords[i][3]==0)
+  {
+    var d = new Date(dbWords[i][0]);
+    var s = (d.getMonth() + 1) + "/";
+     s += d.getDate() + "/";
+     s += d.getFullYear();
+    var div = document.createElement("div");
+    div.id = "div_newword_" + i;
+    if(i%2==0)
+    {
+      div.style.background = '#cec';
+    }
+    //div.innerHTML= i + " " + s + " "+ dbWords[i][1];
+    div.innerHTML= i + ". "+ dbWords[i][1] 
+    + "<input type='button' value='记住了' onclick='jscript:SetGood(" +  i + ");'/>"
+    + "<p>例句：" + dbWords[i][2] + "</p>";
+    //wordHtm += "<div bgcolor=>" +  + "</div>";
+    document.getElementById("div_words").appendChild(div);
+  }
+  else if(dbWords[i][3]==1)
+  {
+    AddRememberItem(i);
+  }
+}
+//document.getElementById("div_words").innerHTML = wordHtm;
+</script>
+
+</body>
+</html>
