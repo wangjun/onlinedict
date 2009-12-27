@@ -42,7 +42,8 @@ function SaveNewWord(w,s,purl,pos)
     },
     function(response)
     {
-      //alert("已保存！");
+      //alert("dream?");
+      //alert(response);
     }
 );
 
@@ -207,7 +208,7 @@ function createPopUp(word, x, y, screenX, screenY) {
   //frame.style.backgroundColor = '#008000';
   body.appendChild(frame);
   
-  SaveNewWord(word,"","",0);
+  SaveNewWord(word,"",window.location.href,0);
   
   last_frame = frame;
   return;

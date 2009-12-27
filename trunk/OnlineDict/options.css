@@ -17,7 +17,7 @@ body
 
 .settings-table
 { 
-  width: 300px;
+  width: 600px;
   padding: 2px;
   border: solid 1px #3A3;
   background-color:#DFD;
@@ -45,6 +45,6 @@ h1
 { 
   margin-left: auto;
   margin-right: auto;
-  width: 400px;
+  width: 600px;
   padding-top: 1px;
  }
