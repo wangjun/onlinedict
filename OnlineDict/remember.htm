@@ -2,17 +2,14 @@
 "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta name="generator" content="HTML Tidy, see www.w3.org">
 <meta http-equiv="Content-Type" content=
 "text/html; charset=iso-8859-15">
 <title>OnlineDict 选项页</title>
 <link rel="stylesheet" type="text/css" href="options.css">
-<script type="text/javascript" src="options_manage.js">
-</script>
 </head>
-<body onload="restore_options();">
+<body>
 <div id="main_container">
-<h1>OnlineDict 单词记忆助手</h1>
+<h1><img src="logo.png" width="30" />OnlineDict 单词记忆助手</h1>
 
 <table cellpadding="5" class="settings-table">
 <tr><td valign="top">
@@ -23,18 +20,16 @@
 </td>
 </tr>
 </table>
-
-<script type="text/javascript" src="newwords.js">
-</script>
+<script type="text/javascript" src="lookup.js"></script>
+<script type="text/javascript" src="newwords.js"></script>
 <script> 
+var dbWords = ReadWord();
 function SetGood(id)
 {
-  //alert(id);
   document.getElementById("div_newword_" + id).style.display = "none";
   AddRememberItem(id);
   
-  dbWords[id][3] = 1;
-  localStorage["dbWords3"] = JSON.stringify(dbWords);
+  DBSetGood(id);
 }
 function AddRememberItem(i)
 {
@@ -52,7 +47,7 @@ function AddRememberItem(i)
 //document.getElementById("div_words").style.width = "50%";
 //document.getElementById("div_finished").style.border = "1px solid #3A3";
 //document.getElementById("div_finished").style.width = "50%";
-
+alert(dbWords[0][1]);
 var wordHtm = "";
 for(var i=dbWords.length-1;i>=0;i--)
 {
