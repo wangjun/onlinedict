@@ -173,13 +173,13 @@ function OnDictEvent(e) {
   }
   
   if (word != '') {
-    createPopUp(word, e.pageX, e.pageY, e.screenX, e.screenY);
+    createPopUp(word, window.getSelection().getRangeAt(0).startContainer.nodeValue, e.pageX, e.pageY, e.screenX, e.screenY);
     return;
   }
 }
 
 //显示翻译窗口
-function createPopUp(word, x, y, screenX, screenY) {
+function createPopUp(word,senctence, x, y, screenX, screenY) {
   if (OnCheckCloseWindow()) {
     return;
   }
@@ -208,7 +208,7 @@ function createPopUp(word, x, y, screenX, screenY) {
   //frame.style.backgroundColor = '#008000';
   body.appendChild(frame);
   
-  SaveNewWord(word,"",window.location.href,0);
+  SaveNewWord(word,senctence,window.location.href,0);
   
   last_frame = frame;
   return;
