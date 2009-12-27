@@ -47,10 +47,10 @@ function AddRememberItem(i)
 //document.getElementById("div_words").style.width = "50%";
 //document.getElementById("div_finished").style.border = "1px solid #3A3";
 //document.getElementById("div_finished").style.width = "50%";
-alert(dbWords[0][1]);
 var wordHtm = "";
 for(var i=dbWords.length-1;i>=0;i--)
 {
+    //alert(document.getElementById("div_words").innerHTML);
   if(dbWords[i][3]==0)
   {
     var d = new Date(dbWords[i][0]);
@@ -63,16 +63,20 @@ for(var i=dbWords.length-1;i>=0;i--)
     {
       div.style.background = '#cec';
     }
-    //div.innerHTML= i + " " + s + " "+ dbWords[i][1];
     div.innerHTML= i + ". "+ dbWords[i][1] 
     + "<input type='button' value='记住了' onclick='jscript:SetGood(" +  i + ");'/>"
     + "<p>例句：" + dbWords[i][2] + "</p>";
     //wordHtm += "<div bgcolor=>" +  + "</div>";
     document.getElementById("div_words").appendChild(div);
+    
   }
   else if(dbWords[i][3]==1)
   {
     AddRememberItem(i);
+  }
+  else
+  {
+    alert("Something wrong:dbWords[i][3]=" + dbWords[i][3]);
   }
 }
 //document.getElementById("div_words").innerHTML = wordHtm;
