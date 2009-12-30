@@ -20,6 +20,8 @@ function SaveWord(dbWords)
 
 function AddWord(word,sentence,pageUrl,pos)
 {
+    DBAddItem([(new Date()).getTime(),word,sentence,0,pageUrl,pos]);
+    
     var dbWords = ReadWord(); //写之前要先读出一次，否则可能会冲掉后面的修改
     //alert(word);
     dbWords.push([(new Date()).getTime(),word,sentence,0,pageUrl,pos]);
@@ -56,18 +58,20 @@ function _DBReadInfo()
 
 function _DBSaveInfo()
 {
-  localStorage["_DBInfo"] = JSON.stringify(dbWords);
+  localStorage["_DBInfo"] = JSON.stringify(DB_INFO);
 }
 
 function _DBReadBlock(idBlock)
 {
   _DBReadInfo();
+  //alert(DB_INFO["lastBlockId"] + "," + idBlock);
   if(DB_INFO["lastBlockId"]>idBlock)
   {
-    return NULL;
+    return null;
   }
   var dbWords = [];
   var oldDB = localStorage["dbData_" + idBlock];
+  //alert("oldDB:" + oldDB);
   if(oldDB)
   {
       dbWords = JSON.parse(oldDB);
@@ -87,21 +91,23 @@ function DBGetRange()
 
 function DBGetItem(id)
 {
-  var blockId = id/BLOCK_ITEM_COUNT;
+  var blockId = Math.floor(id/BLOCK_ITEM_COUNT);
+  //alert("id%BLOCK_ITEM_COUNT:" + id%BLOCK_ITEM_COUNT + "," + blockId);
   var items = _DBReadBlock(blockId);
   if(!items)
   {
-    return NULL;
+    return null;
   }
-  if(items.length>id%BLOCK_ITEM_COUNT)
+  if(items.length<=id%BLOCK_ITEM_COUNT)
   {
-      return NULL;
+      return null;
   }
+  //alert(items.length + " - " + id%BLOCK_ITEM_COUNT);
   return items[id%BLOCK_ITEM_COUNT];
 }
 function DBUpdateItem(id,item)
 {
-  var blockId = id/BLOCK_ITEM_COUNT;
+  var blockId = Math.floor(id/BLOCK_ITEM_COUNT);
   var items = _DBReadBlock(blockId);
   if(!items)
   {
@@ -119,7 +125,7 @@ function DBAddItem(item)
 {
   _DBReadInfo();
   var id = 1+DB_INFO["itemCount"];
-  var blockId = id/BLOCK_ITEM_COUNT;
+  var blockId = Math.floor(id/BLOCK_ITEM_COUNT);
   
   var items = _DBReadBlock(blockId);
   if(!items)
@@ -135,4 +141,5 @@ function DBAddItem(item)
   DB_INFO["itemCount"] = id;
   DB_INFO["lastBlockId"] = blockId;
   _DBSaveInfo();
+  //alert("item:" + item);
 }
