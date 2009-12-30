@@ -1,39 +1,14 @@
 ﻿
-function ReadWord()
-{
-  var dbWords = [];
-  var oldDB = localStorage["dbWords3"];
-  if(oldDB)
-  {
-      //alert(old);
-      //alert(oldDB);
-      dbWords = JSON.parse(oldDB);
-  }
-  
-  return dbWords;
-}
-
-function SaveWord(dbWords)
-{
-  localStorage["dbWords3"] = JSON.stringify(dbWords);
-}
-
 function AddWord(word,sentence,pageUrl,pos)
 {
     DBAddItem([(new Date()).getTime(),word,sentence,0,pageUrl,pos]);
-    
-    var dbWords = ReadWord(); //写之前要先读出一次，否则可能会冲掉后面的修改
-    //alert(word);
-    dbWords.push([(new Date()).getTime(),word,sentence,0,pageUrl,pos]);
-    SaveWord(dbWords);
-    //alert(dbWords);
 }
 
-function DBSetGood(id)
+function DBSetRemember(id)
 {
-  var dbWords = ReadWord(); //写之前要先读出一次，否则可能会冲掉后面的修改
-  dbWords[id][3] = 1;
-  SaveWord(dbWords);
+    var item = DBGetItem(id);
+    item[3] = 1;
+    DBUpdateItem(id,item);
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -111,14 +86,17 @@ function DBUpdateItem(id,item)
   var items = _DBReadBlock(blockId);
   if(!items)
   {
+    alert("error:items null");
     return false;
   }
-  if(items.length>id%BLOCK_ITEM_COUNT)
+  if(items.length<=id%BLOCK_ITEM_COUNT)
   {
-      return false;
+    alert("error:items length=" + items.length + ",id=" + id);
+    return false;
   }
   items[id%BLOCK_ITEM_COUNT] = item;
-  _DBSaveBlock(id,items);
+  _DBSaveBlock(blockId,items);
+  //alert(item);
   return true;
 }
 function DBAddItem(item)

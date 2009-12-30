@@ -13,7 +13,7 @@
 
 <table cellpadding="5" class="settings-table">
 <tr><td valign="top" width="75%">您最近查看的生词：<input type="button" value="上一页" onclick="ShowPrev()"/><input type="button" value="下一页"  onclick="ShowNext()"/>
-<div id="itemcount">共N条</div>
+<div id="itemcount" align="right">共N条</div>
 <div id="div_words" ></div>
 </td>
 <td valign="top">
@@ -25,25 +25,36 @@
 <script type="text/javascript" src="newwords.js"></script>
 <script> 
 var range = DBGetRange();
-document.getElementById("itemcount").innerHTML = "共" + range["itemCount"] + "条";
+var currentpage = GetPageCount();
+ShowPage(currentpage);
+function GetPageCount()
+{
+    var itemcount = range["itemCount"];
+    if(itemcount<=0)
+    {
+        return 0;
+    }
+    var flr = Math.floor(itemcount/7);
+    if(0==itemcount%7)
+    {
+        flr -= 1;
+    }
+    return flr;
+}
 
-var dbWords = ReadWord();
 function SetRemember(id)
 {
+  DBSetRemember(id);
+  
   document.getElementById("div_newword_" + id).style.display = "none";
   AddRememberItem(id);
-  
-  DBSetGood(id);
 }
 function AddRememberItem(i)
 {
     var div = document.createElement("div");
     div.id = "div_finish_" + i;
-    if(i%2==0)
-    {
-      div.style.background = '#cec';
-    }
-    div.innerHTML= i + ". " + dbWords[i][1];
+    div.style.background = '#cfc';
+    div.innerHTML= DBGetItem(i)[1];
     document.getElementById("div_finished").appendChild(div);
 }
 function ShowItem(idBgn,count)
@@ -52,36 +63,39 @@ function ShowItem(idBgn,count)
     document.getElementById("div_words").innerHTML = "";
     for(var i=idBgn+count-1;i>=idBgn;i--)
     {
-      //alert(range["itemCount"]);
       if(range["itemCount"] <= i)
       {
         continue;
       }
-      //alert(dbWords.length);
-      //alert(i);
       var item = DBGetItem(i);
       //alert(item);
       if(item[3]==0)
       {
-        var d = new Date(item[0]);
-        var s = (d.getMonth() + 1) + "/";
-         s += d.getDate() + "/";
-         s += d.getFullYear();
         var div = document.createElement("div");
         div.id = "div_newword_" + i;
         if(i%2==0)
         {
           div.style.background = '#cec';
         }
+        var reg = new RegExp(item[1],"gim");
+        var newWord = "<bond><font color=red>" + item[1] + "</font><bond>";
+        if(!item[2])
+        {
+            item[2] = "(empty)";
+        }
         div.innerHTML= i + ". "+ item[1] 
         + "<input type='button' value='记住了' onclick='jscript:SetRemember(" +  i + ");'/>"
-        + "<p>例句：" + item[2] + "</p>";
-        //wordHtm += "<div bgcolor=>" +  + "</div>";
+        + "<p>例句：" + item[2].replace(reg,newWord) + "</p>"; 
         document.getElementById("div_words").appendChild(div);
         
       }
       else if(item[3]==1)
       {
+        var div = document.createElement("div");
+        div.id = "div_newword_" + i;
+        div.style.background = '#cfc';
+        div.innerHTML= i + ". "+ item[1];
+        document.getElementById("div_words").appendChild(div);
         AddRememberItem(i);
       }
       else
@@ -90,26 +104,29 @@ function ShowItem(idBgn,count)
       }
     }
 }
-
-//ShowItem(dbWords.length-10,10);
 function ShowPage(i)
 {
+    document.getElementById("itemcount").innerHTML = range["itemCount"] + "条,共" + GetPageCount() + "页，当前第" + i +"页";
     ShowItem(i*7,7);
 }
-//ShowPage(dbWords.length/10);
-var currentpage = 0;
-ShowPage(currentpage);
 function ShowPrev()
 {
     currentpage--;
+    if(currentpage<=0)
+    {
+        currentpage = 0;
+    }
     ShowPage(currentpage);
 }
 function ShowNext()
 {
     currentpage++;
+    if(currentpage>=GetPageCount())
+    {
+        currentpage = GetPageCount();
+    }
     ShowPage(currentpage);
 }
-//document.getElementById("div_words").innerHTML = wordHtm;
 </script>
 
 </body>
