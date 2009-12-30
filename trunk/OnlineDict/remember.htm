@@ -12,7 +12,8 @@
 <h1><img src="logo.png" width="30" />OnlineDict 单词记忆助手</h1>
 
 <table cellpadding="5" class="settings-table">
-<tr><td valign="top" width="75%">您最近查看的生词：<span align="right"><input type="button" value="上一页" onclick="ShowPrev()"/><input type="button" value="下一页"  onclick="ShowNext()"/></span>
+<tr><td valign="top" width="75%">您最近查看的生词：<input type="button" value="上一页" onclick="ShowPrev()"/><input type="button" value="下一页"  onclick="ShowNext()"/>
+<div id="itemcount">共N条</div>
 <div id="div_words" ></div>
 </td>
 <td valign="top">
@@ -23,8 +24,11 @@
 <script type="text/javascript" src="lookup.js"></script>
 <script type="text/javascript" src="newwords.js"></script>
 <script> 
+var range = DBGetRange();
+document.getElementById("itemcount").innerHTML = "共" + range["itemCount"] + "条";
+
 var dbWords = ReadWord();
-function SetGood(id)
+function SetRemember(id)
 {
   document.getElementById("div_newword_" + id).style.display = "none";
   AddRememberItem(id);
@@ -48,10 +52,18 @@ function ShowItem(idBgn,count)
     document.getElementById("div_words").innerHTML = "";
     for(var i=idBgn+count-1;i>=idBgn;i--)
     {
-        //alert(document.getElementById("div_words").innerHTML);
-      if(dbWords[i][3]==0)
+      //alert(range["itemCount"]);
+      if(range["itemCount"] <= i)
       {
-        var d = new Date(dbWords[i][0]);
+        continue;
+      }
+      //alert(dbWords.length);
+      //alert(i);
+      var item = DBGetItem(i);
+      //alert(item);
+      if(item[3]==0)
+      {
+        var d = new Date(item[0]);
         var s = (d.getMonth() + 1) + "/";
          s += d.getDate() + "/";
          s += d.getFullYear();
@@ -61,20 +73,20 @@ function ShowItem(idBgn,count)
         {
           div.style.background = '#cec';
         }
-        div.innerHTML= i + ". "+ dbWords[i][1] 
-        + "<input type='button' value='记住了' onclick='jscript:SetGood(" +  i + ");'/>"
-        + "<p>例句：" + dbWords[i][2] + "</p>";
+        div.innerHTML= i + ". "+ item[1] 
+        + "<input type='button' value='记住了' onclick='jscript:SetRemember(" +  i + ");'/>"
+        + "<p>例句：" + item[2] + "</p>";
         //wordHtm += "<div bgcolor=>" +  + "</div>";
         document.getElementById("div_words").appendChild(div);
         
       }
-      else if(dbWords[i][3]==1)
+      else if(item[3]==1)
       {
         AddRememberItem(i);
       }
       else
       {
-        alert("Something wrong:dbWords[i][3]=" + dbWords[i][3]);
+        alert("Something wrong:item[3]=" + item[3]);
       }
     }
 }
@@ -85,7 +97,7 @@ function ShowPage(i)
     ShowItem(i*7,7);
 }
 //ShowPage(dbWords.length/10);
-var currentpage = 6;
+var currentpage = 0;
 ShowPage(currentpage);
 function ShowPrev()
 {
