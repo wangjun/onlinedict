@@ -27,6 +27,8 @@
 var range = DBGetRange();
 var currentpage = GetPageCount();
 ShowPage(currentpage);
+
+
 function GetPageCount()
 {
     var itemcount = range["itemCount"];
@@ -68,6 +70,10 @@ function ShowItem(idBgn,count)
         continue;
       }
       var item = DBGetItem(i);
+      if(!item)
+      {
+        continue;
+      }
       //alert(item);
       if(item[3]==0)
       {
@@ -83,7 +89,7 @@ function ShowItem(idBgn,count)
         {
             item[2] = "(empty)";
         }
-        div.innerHTML= i + ". "+ item[1] 
+        div.innerHTML= (i+1) + ". "+ item[1] 
         + "<input type='button' value='记住了' onclick='jscript:SetRemember(" +  i + ");'/>"
         + "<p>例句：" + item[2].replace(reg,newWord) + "</p>"; 
         document.getElementById("div_words").appendChild(div);
