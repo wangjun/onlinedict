@@ -12,7 +12,7 @@ function DBSetRemember(id)
 }
 
 ////////////////////////////////////////////////////////////////////////
-var BLOCK_ITEM_COUNT = 100; //一个块里，最多多少条目
+var BLOCK_ITEM_COUNT = 10; //一个块里，最多多少条目
 var MAX_BLOCK_COUNT = 100;  //最多多少个块
 var DB_INFO =
 {
@@ -40,10 +40,10 @@ function _DBReadBlock(idBlock)
 {
   _DBReadInfo();
   //alert(DB_INFO["lastBlockId"] + "," + idBlock);
-  if(DB_INFO["lastBlockId"]>idBlock)
-  {
-    return null;
-  }
+  //if(DB_INFO["lastBlockId"]>idBlock)
+  //{
+  //  return null;
+  //}
   var dbWords = [];
   var oldDB = localStorage["dbData_" + idBlock];
   //alert("oldDB:" + oldDB);
@@ -71,15 +71,19 @@ function DBGetItem(id)
   var items = _DBReadBlock(blockId);
   if(!items)
   {
+    alert("id=" + id + ",block=" + blockId);
     return null;
   }
   if(items.length<=id%BLOCK_ITEM_COUNT)
   {
+      alert("len=" + items.length + " blockId=" + blockId + " id=" + id%BLOCK_ITEM_COUNT);
+      alert(items[id%BLOCK_ITEM_COUNT]);
       return null;
   }
   //alert(items.length + " - " + id%BLOCK_ITEM_COUNT);
   return items[id%BLOCK_ITEM_COUNT];
 }
+
 function DBUpdateItem(id,item)
 {
   var blockId = Math.floor(id/BLOCK_ITEM_COUNT);
@@ -102,8 +106,8 @@ function DBUpdateItem(id,item)
 function DBAddItem(item)
 {
   _DBReadInfo();
-  var id = 1+DB_INFO["itemCount"];
-  var blockId = Math.floor(id/BLOCK_ITEM_COUNT);
+  var itemId = DB_INFO["itemCount"];
+  var blockId = Math.floor(itemId/BLOCK_ITEM_COUNT);
   
   var items = _DBReadBlock(blockId);
   if(!items)
@@ -116,7 +120,7 @@ function DBAddItem(item)
   _DBSaveBlock(blockId,items);
   
   //再保存索引
-  DB_INFO["itemCount"] = id;
+  DB_INFO["itemCount"] = itemId + 1;
   DB_INFO["lastBlockId"] = blockId;
   _DBSaveInfo();
   //alert("item:" + item);
