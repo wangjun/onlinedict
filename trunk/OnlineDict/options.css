@@ -4,6 +4,7 @@ body
   font-family: "Lucida Console";
   color: #101010;
   background-color:#cec;
+  margin-top: 0px;
   }
 
 
@@ -17,7 +18,7 @@ body
 
 .settings-table
 { 
-  width: 600px;
+  width: 590px;
   padding: 2px;
   border: solid 1px #3A3;
   background-color:#DFD;
