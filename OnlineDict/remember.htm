@@ -9,7 +9,11 @@
 </head>
 <body>
 <div id="main_container">
+<table width="100%" valign="top"><tr><td>
 <h1><img src="logo.png" width="30" />OnlineDict 单词记忆助手</h1>
+</td><td>
+<p align="right"><a href="./options.htm" target="_blank">选项</a></p>
+</td></tr></table>
 
 <table cellpadding="5" class="settings-table">
 <tr><td valign="top" width="75%">您最近查看的生词：<input type="button" value="上一页" onclick="ShowPrev()"/><input type="button" value="下一页"  onclick="ShowNext()"/>
@@ -17,7 +21,7 @@
 <div id="div_words" ></div>
 </td>
 <td valign="top">
-您已经记住了以下单词：
+您最近记住了以下单词：
 <div id="div_finished"></div>
 </td>
 </tr>
@@ -65,10 +69,21 @@ function AddRememberItem(item)
 }
 function ShowRememberItems()
 {
-    document.getElementById("div_finished").innerHTML = "";
+    var maxRememberCount = 15;
     var itemLen = FIFOLength();
+    document.getElementById("div_finished").innerHTML = "";
+    if(itemLen<=0)
+    {
+        document.getElementById("div_finished").innerHTML = "还没有记住的单词，要努力啊！";
+    }
+    
     for(var i=itemLen-1;i>=0;i--)
     {
+        maxRememberCount--;
+        if(maxRememberCount<=0)
+        {
+            break;
+        }
         var item = FIFOItem(i);
         AddRememberItem(item);
     }
