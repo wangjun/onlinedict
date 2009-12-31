@@ -76,10 +76,15 @@ function getWordIndex(word) {
 
 function isEnglish(s)
 {  
-    var patrn=/[\--~]+/;
-    if (!patrn.exec(s)) return false  
-    return true  
-}  
+    for(var i=0;i<s.length;i++)
+    {
+        if(s.charCodeAt(i)>126)
+        {
+            return false;
+        }
+    }
+    return true; 
+}
 
 //按下键盘时，关闭窗口
 document.onkeydown=function(e) {
@@ -155,8 +160,15 @@ function OnDictEvent(e) {
     return;
   }
   var word = String(window.getSelection());
-  word = word.replace(/^\s*/, "").replace(/\s*$/, "");
+  //word = word.replace(/^\s*/, "").replace(/\s*$/, "");
   
+  //太长的字符串不取词
+  if(word.length>36)
+  {
+    return;
+  }
+  
+  //只对英文显示取词
   if(optVal("english_only"))
   {
     if(!isEnglish(word))
