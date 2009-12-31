@@ -17,7 +17,8 @@
 <div id="div_words" ></div>
 </td>
 <td valign="top">
-<div id="div_finished" >您已经记住了以下单词：</div>
+您已经记住了以下单词：
+<div id="div_finished"></div>
 </td>
 </tr>
 </table>
@@ -27,7 +28,7 @@
 var range = DBGetRange();
 var currentpage = GetPageCount();
 ShowPage(currentpage);
-
+ShowRememberItems();
 
 function GetPageCount()
 {
@@ -47,17 +48,30 @@ function GetPageCount()
 function SetRemember(id)
 {
   DBSetRemember(id);
+  FIFOAddItem(DBGetItem(id));
   
   document.getElementById("div_newword_" + id).style.display = "none";
-  AddRememberItem(id);
+  ShowRememberItems();
+  //AddRememberItem(id);
 }
-function AddRememberItem(i)
+function AddRememberItem(item)
 {
     var div = document.createElement("div");
-    div.id = "div_finish_" + i;
+    //div.id = "div_finish_" + i;
     div.style.background = '#cfc';
-    div.innerHTML= DBGetItem(i)[1];
+    //alert(item);
+    div.innerHTML= item[1];
     document.getElementById("div_finished").appendChild(div);
+}
+function ShowRememberItems()
+{
+    document.getElementById("div_finished").innerHTML = "";
+    var itemLen = FIFOLength();
+    for(var i=itemLen-1;i>=0;i--)
+    {
+        var item = FIFOItem(i);
+        AddRememberItem(item);
+    }
 }
 function ShowItem(idBgn,count)
 {
@@ -102,7 +116,7 @@ function ShowItem(idBgn,count)
         div.style.background = '#cfc';
         div.innerHTML= i + ". "+ item[1];
         document.getElementById("div_words").appendChild(div);
-        AddRememberItem(i);
+        //AddRememberItem(i);
       }
       else
       {

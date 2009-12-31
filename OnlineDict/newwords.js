@@ -125,3 +125,50 @@ function DBAddItem(item)
   _DBSaveInfo();
   //alert("item:" + item);
 }
+
+/////////////////////////////////////////////////////
+//一个先进先出队列
+var FIFO_LENGTH = 100;  //队列最大长度
+var FIFO_DBNAME = "_FIFO_LIST";
+function FIFOAddItem(item)
+{
+    var items = _FIFORead();
+    if(items.length>=FIFO_LENGTH)
+    {
+        for(var i=0;i<items.length-1;i++)
+        {
+            items[i] = items[i+1];
+        }
+        items[items.length-1] = item;
+    }
+    else
+    {
+        items.push(item);
+    }
+    
+    _FIFOSave(items);
+}
+function FIFOLength()
+{
+    var items = _FIFORead();
+    return items.length;
+}
+function FIFOItem(id)
+{
+    var items = _FIFORead();
+    //alert("id=" + id + "---" +items.length);
+    return items[id];
+}
+function _FIFOSave(items)
+{
+  localStorage[FIFO_DBNAME] = JSON.stringify(items);
+}
+function _FIFORead()
+{
+  var oldDB = localStorage[FIFO_DBNAME];
+  if(oldDB)
+  {
+    return JSON.parse(oldDB);
+  }
+  return [];
+}
