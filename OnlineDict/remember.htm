@@ -16,8 +16,17 @@
 </td></tr></table>
 
 <table cellpadding="5" class="settings-table">
-<tr><td valign="top" width="75%">您最近查看的生词：<input type="button" value="上一页" onclick="ShowPrev()"/><input type="button" value="下一页"  onclick="ShowNext()"/>
-<div id="itemcount" align="right">共N条</div>
+<tr><td valign="top" width="75%">
+
+
+<table width="100%"><tr><td>
+您最近查看的生词：
+</td><td align="right">
+<input type="button" value="上一页" onclick="ShowPrev()"/><input type="button" value="下一页"  onclick="ShowNext()"/>
+</td><td align="left">
+<div id="itemcount" align="left">共N条</div>
+</td></tr></table>
+
 <div id="div_words" ></div>
 </td>
 <td valign="top">
@@ -54,7 +63,11 @@ function SetRemember(id)
   DBSetRemember(id);
   FIFOAddItem(DBGetItem(id));
   
-  document.getElementById("div_newword_" + id).style.display = "none";
+  var div = document.getElementById("div_newword_" + id);//.style.display = "none";
+  div.style.background = '#afa';
+  //div.innerHTML = "";
+  div.innerHTML = (id+1) + ". "+ DBGetItem(id)[1];
+  
   ShowRememberItems();
   //AddRememberItem(id);
 }
@@ -108,19 +121,21 @@ function ShowItem(idBgn,count)
       {
         var div = document.createElement("div");
         div.id = "div_newword_" + i;
-        if(i%2==0)
-        {
-          div.style.background = '#cec';
-        }
-        var reg = new RegExp(item[1],"gim");
-        var newWord = "<bond><font color=red>" + item[1] + "</font><bond>";
+        div.style.background = '#cfc';
+        var reg = new RegExp(escape(item[1]),"gim");
+        var newWord = "<bold><font color=red>" + item[1] + "</font></bold>";
         if(!item[2])
         {
             item[2] = "(empty)";
         }
-        div.innerHTML= (i+1) + ". "+ item[1] 
-        + "<input type='button' value='记住了' onclick='jscript:SetRemember(" +  i + ");'/>"
-        + "<p>例句：" + item[2].replace(reg,newWord) + "</p>"; 
+        div.innerHTML= "<table width='100%'><tr><td>" + (i+1) + ". <bold>"+ item[1] 
+        + "</bold></td><td align='right'><input type='button' value='记住了' onclick='jscript:SetRemember(" +  i + ");'/></td></tr></table>";
+        
+        var divExp = document.createElement("div");
+        divExp.style.background = '#DFD';
+        divExp.innerHTML = "例句：" + item[2].replace(reg,newWord);
+        div.appendChild(divExp);
+        //+ "<div> + "</div>"; 
         document.getElementById("div_words").appendChild(div);
         
       }
@@ -128,8 +143,8 @@ function ShowItem(idBgn,count)
       {
         var div = document.createElement("div");
         div.id = "div_newword_" + i;
-        div.style.background = '#cfc';
-        div.innerHTML= i + ". "+ item[1];
+        div.style.background = '#afa';
+        div.innerHTML= (i+1) + ". "+ item[1];
         document.getElementById("div_words").appendChild(div);
         //AddRememberItem(i);
       }
@@ -141,7 +156,7 @@ function ShowItem(idBgn,count)
 }
 function ShowPage(i)
 {
-    document.getElementById("itemcount").innerHTML = range["itemCount"] + "条,共" + GetPageCount() + "页，当前第" + i +"页";
+    document.getElementById("itemcount").innerHTML = (GetPageCount()+1) + "页之" + (i+1);
     ShowItem(i*7,7);
 }
 function ShowPrev()
