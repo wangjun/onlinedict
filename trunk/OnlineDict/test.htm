@@ -10,6 +10,42 @@ good bye,good night
 <br/>
 <div id="div_finished" width = "50%">您已经记住了以下单词：</div>
 <script> 
+function isEnglish(s)
+{  
+    for(var i=0;i<s.length;i++)
+    {
+        if(s.charCodeAt(i)>126)
+        {
+            return false;
+        }
+    }
+    return true; 
+}
+if(!isEnglish("Shaikh's family claim that he was duped into carrying a suitcase that he did not realise had heroin stashed inside it, and that his manic emotions were exploited by criminals who said they could make him a popstar."))
+{
+    alert("error 11");
+}
+if(!isEnglish("hello world,what are you doing?"))
+{
+    alert("error 1");
+}
+if(!isEnglish("Walking down the street, a man hears a voice: \"Stop! If you take one more step, a brick will fall down and kill you.\" "))
+{
+    alert("error 12");
+}
+
+if(isEnglish(" 自信人生二百年， 会当水击三千里！"))
+{
+    alert("error 2");
+}
+
+if(isEnglish("hello world,what are you doing ? 你在干嘛？"))
+{
+    alert("error 3");
+}
+alert("英语判断测试通过！!");
+
+
 var dbWords = [];
 var old = localStorage["dbWords3"];
 if(old)
