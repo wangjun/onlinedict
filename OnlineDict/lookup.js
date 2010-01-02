@@ -160,7 +160,7 @@ function OnDictEvent(e) {
     return;
   }
   var word = String(window.getSelection());
-  //word = word.replace(/^\s*/, "").replace(/\s*$/, "");
+  word = word.replace(/^\s*/, "").replace(/\s*$/, "");
   
   //太长的字符串不取词
   if(word.length>36)
