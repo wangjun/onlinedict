@@ -122,7 +122,7 @@ function ShowItem(idBgn,count)
         var div = document.createElement("div");
         div.id = "div_newword_" + i;
         div.style.background = '#cfc';
-        var reg = new RegExp(escape(item[1]),"gim");
+        var reg = new RegExp(item[1],"gim");
         var newWord = "<bold><font color=red>" + item[1] + "</font></bold>";
         if(!item[2])
         {
@@ -133,7 +133,7 @@ function ShowItem(idBgn,count)
         
         var divExp = document.createElement("div");
         divExp.style.background = '#DFD';
-        divExp.innerHTML = "例句：" + item[2].replace(reg,newWord);
+        divExp.innerHTML = "浏览历史：" + item[2].replace(reg,newWord);
         div.appendChild(divExp);
         //+ "<div> + "</div>"; 
         document.getElementById("div_words").appendChild(div);
