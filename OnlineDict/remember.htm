@@ -61,22 +61,80 @@ function GetPageCount()
 function SetRemember(id)
 {
   DBSetRemember(id);
-  FIFOAddItem(DBGetItem(id));
+  FIFOAddItem([id,DBGetItem(id)]);
   
   var div = document.getElementById("div_newword_" + id);//.style.display = "none";
   div.style.background = '#afa';
-  //div.innerHTML = "";
   div.innerHTML = "<img src='tick.png'/>" + (id+1) + ". "+ DBGetItem(id)[1];
   
   ShowRememberItems();
-  //AddRememberItem(id);
 }
-function AddRememberItem(item)
+
+//当单词图层点击时
+//转换折叠状态并显示
+function OnWordDivClick()
+{
+    var item = DBGetItem(this.item_id);
+    if(!item)
+    {
+        return;
+    }
+    
+    //标题栏
+    var htmlStr = "";
+    if(item[3]==1) //已记住
+    {
+        htmlStr += "<img src='tick.png'/>" ;
+        htmlStr += (this.item_id+1) + ". " + item[1];
+        this.innerHTML= htmlStr;
+    }
+    else            //未记住
+    {
+        this.innerHTML= "<table width='100%'><tr><td>" + (this.item_id+1) + ". <bold>"+ item[1] 
+        + "</bold></td><td align='right'>" 
+        + "<input type='button' value='记住了' onclick='jscript:SetRemember("+  this.item_id + ");'/>"
+        + "</td></tr></table>";
+    }
+    
+    //取词历史栏
+    if(this.fold) //折叠
+    {
+        this.fold = false;
+        this.style.background = '#cfc';
+        
+        var reg = new RegExp(item[1],"gim");
+        var divExp = document.createElement("div");
+        divExp.style.background = '#DFD';
+        if(!item[2])
+        {
+            item[2] = "(empty)";
+        }
+        var newWord = "<bold><font color=red>" + item[1] + "</font></bold>";
+        divExp.innerHTML = "取词记录：" + item[2].replace(reg,newWord);
+        this.appendChild(divExp);
+    }
+    else    //非折叠
+    {
+        this.fold = true;
+        this.style.background = '#afa';
+    }
+}
+
+function OnRememberWordDivClick()
+{
+    ShowItems(this.item_id,1);
+    var div = document.getElementById("div_newword_" + this.item_id);
+    if(div)
+    {
+        div.onclick();
+    }
+}
+function AddRememberItem(id,item)
 {
     var div = document.createElement("div");
-    //div.id = "div_finish_" + i;
     div.style.background = '#cfc';
-    //alert(item);
+    div.item_id = id;
+    div.onclick = OnRememberWordDivClick;
     div.innerHTML= "<img src='tick.png'/>" + item[1];
     document.getElementById("div_finished").appendChild(div);
 }
@@ -97,11 +155,11 @@ function ShowRememberItems()
         {
             break;
         }
-        var item = FIFOItem(i);
-        AddRememberItem(item);
+        var fi_item = FIFOItem(i);
+        AddRememberItem(fi_item[0],fi_item[1]);
     }
 }
-function ShowItem(idBgn,count)
+function ShowItems(idBgn,count)
 {
     var wordHtm = "";
     document.getElementById("div_words").innerHTML = "";
@@ -116,48 +174,34 @@ function ShowItem(idBgn,count)
       {
         continue;
       }
-      //alert(item);
+      var div = document.createElement("div");
+      div.item_id = i;
+      div.onclick = OnWordDivClick;
+      div.id = "div_newword_" + i;
+
       if(item[3]==0)
       {
-        var div = document.createElement("div");
-        div.id = "div_newword_" + i;
-        div.style.background = '#cfc';
-        var reg = new RegExp(item[1],"gim");
-        var newWord = "<bold><font color=red>" + item[1] + "</font></bold>";
-        if(!item[2])
-        {
-            item[2] = "(empty)";
-        }
-        div.innerHTML= "<table width='100%'><tr><td>" + (i+1) + ". <bold>"+ item[1] 
-        + "</bold></td><td align='right'><input type='button' value='记住了' onclick='jscript:SetRemember(" +  i + ");'/></td></tr></table>";
-        
-        var divExp = document.createElement("div");
-        divExp.style.background = '#DFD';
-        divExp.innerHTML = "浏览历史：" + item[2].replace(reg,newWord);
-        div.appendChild(divExp);
-        //+ "<div> + "</div>"; 
-        document.getElementById("div_words").appendChild(div);
-        
+        div.fold = true;
       }
       else if(item[3]==1)
       {
-        var div = document.createElement("div");
-        div.id = "div_newword_" + i;
-        div.style.background = '#afa';
-        div.innerHTML= "<img src='tick.png'/>" + (i+1) + ". "+ item[1];
-        document.getElementById("div_words").appendChild(div);
-        //AddRememberItem(i);
+        div.fold = false;
       }
       else
       {
         alert("Something wrong:item[3]=" + item[3]);
       }
+      document.getElementById("div_words").appendChild(div);
+      
+      div.onclick(); //初始显示
     }
 }
+
+
 function ShowPage(i)
 {
     document.getElementById("itemcount").innerHTML = (GetPageCount()+1) + "页之" + (i+1);
-    ShowItem(i*7,7);
+    ShowItems(i*7,7);
 }
 function ShowPrev()
 {
