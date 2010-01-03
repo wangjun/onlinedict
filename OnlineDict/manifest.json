@@ -1,5 +1,5 @@
 ﻿{"name": "OnlineDict-Chrome翻译助手",
- "version": "2.0",
+ "version": "2.9",
  "description": "双击页面中的单词，会出现一个小翻译窗，显示它的解释。\r\n主页：http://code.google.com/p/onlinedict",
  "icons": { "128": "logo.png"},
  "options_page": "options.htm",
