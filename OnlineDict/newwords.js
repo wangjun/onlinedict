@@ -156,9 +156,21 @@ function FIFOLength()
 function FIFOItem(id)
 {
     var items = _FIFORead();
-    //alert("id=" + id + "---" +items.length);
     return items[id];
 }
+
+function FIFOLastItem()
+{
+  return FIFOItem(FIFOLength()-1);
+}
+
+function FIFOUpdateItem(id,item)
+{
+    var items = _FIFORead();
+    items[id] = item;
+    _FIFOSave(items);
+}
+
 function _FIFOSave(items)
 {
   localStorage[FIFO_DBNAME] = JSON.stringify(items);
