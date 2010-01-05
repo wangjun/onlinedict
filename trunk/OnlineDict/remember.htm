@@ -45,6 +45,39 @@ var currentpage = GetPageCount();
 ShowPage(currentpage);
 ShowRememberItems();
 
+
+//显示翻译窗口
+function CreateTranslateFrame(word,width) {
+  last_word = word;
+  
+  var frame_height = 180;
+  var frame_width = 200;
+  var div_height = 20;
+  
+  var frame = document.createElement('iframe');
+  //frame.src = 'http://dict.cn/mini.php?q=' + escape(word);
+  frame.src = 'http://dict.cn/mini.php?q=' + word;
+  //frame.id = 'OnlineDict';
+  
+  //frame.style.left = x + 'px';
+  //frame.style.top = y + div_height*3/4 + 'px';
+  //frame.style.position = 'absolute';
+  frame.style.width = width;//frame_width + 'px';
+  //frame.style.height = frame_height + 'px';
+  frame.style.border = '0px solid ';// + colors[optVal("color_type")][1];//optVal("links_color");
+  //frame.style.zIndex = '65535';
+  //frame.style.backgroundColor = colors[optVal("color_type")][0];//'#DCF6DB';
+  //frame.style.backgroundColor = '#7CBE80';
+  //frame.style.backgroundColor = '#90EE90';
+  //frame.style.backgroundColor = '#008000';
+  //body.appendChild(frame);
+  
+  //SaveNewWord(word,senctence,window.location.href,0);
+  
+  //last_frame = frame;
+  return frame;
+}
+
 function GetPageCount()
 {
     var itemcount = range["itemCount"];
@@ -99,7 +132,7 @@ function OnWordDivClick()
     }
     
     //取词历史栏
-    if(this.fold) //折叠
+    if(this.fold) //已折叠，转变为非折叠
     {
         this.fold = false;
         this.style.background = '#cfc';
@@ -114,8 +147,10 @@ function OnWordDivClick()
         var newWord = "<bold><font color=red>" + item[1] + "</font></bold>";
         divExp.innerHTML = "取词记录：" + item[2].replace(reg,newWord);
         this.appendChild(divExp);
+        
+        this.appendChild(CreateTranslateFrame(item[1],this.style.width));
     }
-    else    //非折叠
+    else    //非折叠，转变为折叠
     {
         this.fold = true;
         this.style.background = '#afa';
@@ -203,7 +238,18 @@ function ShowItems(idBgn,count)
 function ShowPage(i)
 {
     document.getElementById("itemcount").innerHTML = (GetPageCount()+1) + "页之" + (i+1);
-    ShowItems(i*7,7);
+    
+    var itemcount = range["itemCount"];
+    var pagecount = GetPageCount();
+    
+    var reversepage = pagecount - i + 1;
+    var pageitem = itemcount - reversepage*7;
+    if(pageitem<0)
+    {
+        //pageitem = 0;
+    }
+    ShowItems(pageitem,7);
+    //ShowItems(i*7,7);
 }
 function ShowPrev()
 {
