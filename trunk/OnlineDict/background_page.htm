@@ -3,6 +3,20 @@
 <script type="text/javascript" src="newwords.js">
 </script>
 <script type="text/javascript">
+var db=new DictDB();
+db.init();
+//db.NewWord('test1','this is sentence','http://sdfsdf',(new Date()).getTime(),1);
+SaveNewWord=function(word,sentence,wordurl){
+db.GetWord(word,function(result){
+					if(result){
+						db.Update(word,sentence,wordurl);
+					}else{
+						db.NewWord(word,sentence,wordurl);
+					}
+				}
+		);
+}
+
 var DefaultOptions =
 {
     //"background_color": ["color", "#DCF6DB"],
@@ -48,7 +62,9 @@ chrome.extension.onRequest.addListener(
         else if(request.init == "new")
         {
           //alert(request.word);
-          AddWord(request.word,request.sentence,request.wordurl,request.wordpos);
+          //AddWord(request.word,request.sentence,request.wordurl,request.wordpos);
+		  console.log("requst.new");
+		  SaveNewWord(request.word,request.sentence,request.wordurl)
           sendResponse(
                 {
                     init: "globalPages",
