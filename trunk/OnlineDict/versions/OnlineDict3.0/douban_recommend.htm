@@ -1,0 +1,52 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"> 
+       <HTML> 
+       <HEAD> 
+       <TITLE>推荐到豆瓣</TITLE> 
+       <link href="http://www.douban.com/css/douban.css" rel="stylesheet" type="text/css" /> 
+       <script type="text/javascript" src="http://www.douban.com/js/jquery.js"></script> 
+       <script type="text/javascript" src="http://www.douban.com/js/jquery.suggest.js"></script> 
+       <script type="text/javascript" src="http://www.douban.com/js/douban.js"></script> 
+ 
+    
+        <script type="text/javascript"> 
+$(function(){
+        $('#recform').attr('action', 'http://www.douban.com/j/recommend');
+        $('#recform').submit(function(){
+            remote_submit_json(this, function(data){
+                $('#recform').html('<div class="loadpop m">推荐已提交</div>');
+                if(data.r == ''){
+                    setTimeout(function(){window.close()}, 800);
+                }else{
+                    setTimeout(function(){location.href = data.r}, 800);
+                }
+            })
+            return false;
+        })
+    })
+    </script> 
+        
+       <style type="text/css"> 
+       .reccomment .text {width:295px;}
+        </style> 
+       </HEAD> 
+       <BODY style="text-align:center"> 
+   <div style="text-align:left;width:430px; height:320px; border:1px dashed #ddd;margin:0 auto"> 
+    <a href="http://www.douban.com/"> 
+    <a href="http:/www.douban.com/"><img src="http://www.douban.com/pics/logosmall.gif" style="margin:20px 0 0 0;float:right" /></a></a> 
+    <div class="clear"></div> 
+    <form method="post" action="http://www.douban.com/recommend/" id="recform"><div style="display:none;"><input type="hidden" name="ck" value="dg98"/></div> 
+    <div class="rectitle"> 
+    <span class="m">向我的友邻推荐小组话题：昨天买了47本英文原版书</span> 
+    <span class="pl">摘要: 在二手书摊发现的，大部分是小说。一个字，爽！</span><br/> 
+    </div> 
+    <div class="reccomment"> 
+    <span class="pl">推荐语:</span> 
+    <textarea name="comment" rows="3" class="text"></textarea> 
+    <input name="type" value="T" type="hidden"/> 
+    <input name="uid" value="9023430" type="hidden"/> 
+    <input name="r" value="" type="hidden"/> 
+    <input name="ref" value="http://www.douban.com/group/topic/9023430/" type="hidden"/> 
+    <div class="recsubmit"> 
+    <input value="确定" name="rec_submit", type="submit"/><input value="取消" name="rec_cancel" type="button" onclick="javascript:window.close()"/> 
+    </div></div></form></div> 
+    
