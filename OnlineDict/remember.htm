@@ -2,274 +2,303 @@
 "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content=
-"text/html; charset=iso-8859-15">
-<title>OnlineDict 选项页</title>
-<link rel="stylesheet" type="text/css" href="options.css">
-</head>
-<body>
-<div id="main_container">
-<table width="100%" valign="top"><tr><td>
-<h1><img src="logo.png" width="30" />OnlineDict 单词记忆助手</h1>
-</td>
-<td align="right">
-<p><a href="./options.htm" target="_blank">选项</a> | <a href="http://code.google.com/p/onlinedict/" target="_blank">OnlineDict主页</a></p>
-</td>
-</tr></table>
-
-<table cellpadding="5" class="settings-table">
-<tr><td valign="top" width="75%">
-
-
-<table width="100%"><tr><td>
-您最近查看的生词：
-</td><td align="right">
-<input type="button" value="上一页" onclick="ShowPrev()"/><input type="button" value="下一页"  onclick="ShowNext()"/>
-</td><td align="left">
-<div id="itemcount" align="left">共N条</div>
-</td></tr></table>
-
-<div id="div_words" ></div>
-</td>
-<td valign="top">
-您最近记住了以下单词：
-<div id="div_finished"></div>
-</td>
-</tr>
-</table>
-<script type="text/javascript" src="lookup.js"></script>
-<script type="text/javascript" src="newwords.js"></script>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-15">
+    <title>OnlineDict 选项页</title>
+    <link rel="stylesheet" type="text/css" href="options.css">
+    <style type='text/css'>
+		a {
+			font-size: 12px;
+			color: #034B81;
+			text-decoration: none;
+		}
+		a:hover {
+			text-decoration: none;
+		}
+        .lineBlock
+        {
+            margin-bottom: 3px;
+			padding-bottom:3px;
+        }
+        .wordTitle
+        {
+            background-color: #F4F6FC;
+			padding-bottom:3px;
+			padding-top:3px;
+        }
+        .keyWord
+        {
+            display: inline;
+			font-weight: bold;
+            font-size: 16px;
+        }
+        .opBtn
+        {
+            display: inline;
+            float: right;
+            padding-left: 15px;
+        }
+    </style>
+	<script type="text/javascript" src="newwords.js"></script>
 <script> 
-var range = DBGetRange();
-var currentpage = GetPageCount();
-ShowPage(currentpage);
-ShowRememberItems();
+/* util script start*/
+function $(element) {
+  if (typeof element == 'string')
+   return document.getElementById(element);
+}
+function GetGroupValue(groupName){
+	var group=document.getElementsByName(groupName);
+	if(!group)
+		return null;
+	for(var i=0;i<group.length;i++){
+		if(group[i].checked)
+			return group[i].value;
+	}
+	return null;
+}
+/*
+hide=function(element) {
+  $(element).style.display = 'none';
+  return element;
+}
 
+show=function(element) {
+  $(element).style.display = '';
+  return element;
+}
+*/
+Date.prototype.format = function(format)  
+{  
+   var o = {  
+     "M+" : this.getMonth()+1, //month  
+     "d+" : this.getDate(),    //day  
+     "h+" : this.getHours(),   //hour  
+     "m+" : this.getMinutes(), //minute  
+     "s+" : this.getSeconds(), //second  
+     "q+" : Math.floor((this.getMonth()+3)/3), //quarter  
+     "S" : this.getMilliseconds() //millisecond  
+   }  
+   if(/(y+)/.test(format)) format=format.replace(RegExp.$1,  
+     (this.getFullYear()+"").substr(4 - RegExp.$1.length));  
+   for(var k in o)if(new RegExp("("+ k +")").test(format))  
+     format = format.replace(RegExp.$1,  
+       RegExp.$1.length==1 ? o[k] :   
+         ("00"+ o[k]).substr((""+ o[k]).length));  
+   return format;  
+} 
+/* util script end*/
 
-//显示翻译窗口
-function CreateTranslateFrame(word,width) {
-  last_word = word;
-  
-  var frame_height = 180;
+var currentpage = 0;
+var PAGE_SIZE=7;
+var db=new DictDB();
+
+window.onload = function(){
+	db.init();
+	ShowPage(currentpage);
+} 
+
+function CreateTranslateFrame(word) {
+  var frame_height = 280;
   var frame_width = 200;
   var div_height = 20;
   
   var frame = document.createElement('iframe');
-  //frame.src = 'http://dict.cn/mini.php?q=' + escape(word);
   frame.src = 'http://dict.cn/mini.php?q=' + word;
-  //frame.id = 'OnlineDict';
+  frame.id = 'frame_'+word;
+  frame.fold=true;
   
-  //frame.style.left = x + 'px';
-  //frame.style.top = y + div_height*3/4 + 'px';
-  //frame.style.position = 'absolute';
-  frame.style.width = width;//frame_width + 'px';
-  //frame.style.height = frame_height + 'px';
-  frame.style.border = '0px solid ';// + colors[optVal("color_type")][1];//optVal("links_color");
-  //frame.style.zIndex = '65535';
-  //frame.style.backgroundColor = colors[optVal("color_type")][0];//'#DCF6DB';
-  //frame.style.backgroundColor = '#7CBE80';
-  //frame.style.backgroundColor = '#90EE90';
-  //frame.style.backgroundColor = '#008000';
-  //body.appendChild(frame);
-  
-  //SaveNewWord(word,senctence,window.location.href,0);
-  
-  //last_frame = frame;
+  frame.style.left = '10px';
+  frame.style.top = '10px';
+  frame.style.width = '0px';
+  frame.style.height = '0px';
+  frame.style.border = '0px solid ';
   return frame;
 }
 
-function GetPageCount()
-{
-    var itemcount = range["itemCount"];
-    if(itemcount<=0)
-    {
-        return 0;
-    }
-    var flr = Math.floor(itemcount/7);
-    if(0==itemcount%7)
-    {
-        flr -= 1;
-    }
-    return flr;
+function SetOrder(){
+	ShowPage(currentpage);
 }
 
-function SetRemember(id)
-{
-  DBSetRemember(id);
-  FIFOAddItem([id,DBGetItem(id)]);
-  
-  var div = document.getElementById("div_newword_" + id);//.style.display = "none";
-  div.style.background = '#afa';
-  div.innerHTML = "<img src='tick.png'/>" + (id+1) + ". "+ DBGetItem(id)[1];
-  
-  ShowRememberItems();
+function GetPageCount(fun){
+	db.GetTotalCount(function(result){
+						var itemcount = result;
+						if(itemcount<=0)
+						{
+							fun(0);
+						}
+						var flr = Math.floor(itemcount/PAGE_SIZE);
+						if(0==itemcount%PAGE_SIZE)
+						{
+							flr -= 1;
+						}
+						fun(flr);
+					}
+	)
 }
 
-//当单词图层点击时
-//转换折叠状态并显示
-function OnWordDivClick()
-{
-    var item = DBGetItem(this.item_id);
-    if(!item)
-    {
-        return;
-    }
-    
-    //标题栏
-    var htmlStr = "";
-    if(item[3]==1) //已记住
-    {
-        htmlStr += "<img src='tick.png'/>" ;
-        htmlStr += (this.item_id+1) + ". " + item[1];
-        this.innerHTML= htmlStr;
-    }
-    else            //未记住
-    {
-        this.innerHTML= "<table width='100%'><tr><td>" + (this.item_id+1) + ". <bold>"+ item[1] 
-        + "</bold></td><td align='right'>" 
-        + "<input type='button' value='记住了' onclick='jscript:SetRemember("+  this.item_id + ");'/>"
-        + "</td></tr></table>";
-    }
-    
-    //取词历史栏
-    if(this.fold) //已折叠，转变为非折叠
-    {
-        this.fold = false;
-        this.style.background = '#cfc';
-        
-        var reg = new RegExp(item[1],"gim");
-        var divExp = document.createElement("div");
-        divExp.style.background = '#DFD';
-        if(!item[2])
-        {
-            item[2] = "(empty)";
-        }
-        var newWord = "<bold><font color=red>" + item[1] + "</font></bold>";
-        divExp.innerHTML = "取词记录：" + item[2].replace(reg,newWord);
-        this.appendChild(divExp);
-        
-        this.appendChild(CreateTranslateFrame(item[1],this.style.width));
-    }
-    else    //非折叠，转变为折叠
-    {
-        this.fold = true;
-        this.style.background = '#afa';
-    }
-}
-
-function OnRememberWordDivClick()
-{
-    ShowItems(this.item_id,1);
-    var div = document.getElementById("div_newword_" + this.item_id);
-    if(div)
-    {
-        div.onclick();
-    }
-}
-function AddRememberItem(id,item)
-{
-    var div = document.createElement("div");
-    div.style.background = '#cfc';
-    div.item_id = id;
-    div.onclick = OnRememberWordDivClick;
-    div.innerHTML= "<img src='tick.png'/>" + item[1];
-    document.getElementById("div_finished").appendChild(div);
-}
-function ShowRememberItems()
-{
-    var maxRememberCount = 15;
-    var itemLen = FIFOLength();
-    document.getElementById("div_finished").innerHTML = "";
-    if(itemLen<=0)
-    {
-        document.getElementById("div_finished").innerHTML = "还没有记住的单词，要努力啊！";
-    }
-    
-    for(var i=itemLen-1;i>=0;i--)
-    {
-        maxRememberCount--;
-        if(maxRememberCount<=0)
-        {
-            break;
-        }
-        var fi_item = FIFOItem(i);
-        AddRememberItem(fi_item[0],fi_item[1]);
-    }
-}
-function ShowItems(idBgn,count)
-{
-    var wordHtm = "";
-    document.getElementById("div_words").innerHTML = "";
-    for(var i=idBgn+count-1;i>=idBgn;i--)
-    {
-      if(range["itemCount"] <= i)
-      {
-        continue;
-      }
-      var item = DBGetItem(i);
-      if(!item)
-      {
-        continue;
-      }
-      var div = document.createElement("div");
-      div.item_id = i;
-      div.onclick = OnWordDivClick;
-      div.id = "div_newword_" + i;
-
-      if(item[3]==0)
-      {
-        div.fold = true;
-      }
-      else if(item[3]==1)
-      {
-        div.fold = false;
-      }
-      else
-      {
-        alert("Something wrong:item[3]=" + item[3]);
-      }
-      document.getElementById("div_words").appendChild(div);
-      
-      div.onclick(); //初始显示
-    }
+function SetRemember(word){
+	db.DecreaseTranslateCount(word);
+	var span=$('count_'+word);
+	if(span){
+		var c=parseInt(span.innerHTML)-1;
+		span.innerHTML=c;
+	}
 }
 
 
-function ShowPage(i)
-{
-    document.getElementById("itemcount").innerHTML = (GetPageCount()+1) + "页之" + (i+1);
-    
-    var itemcount = range["itemCount"];
-    var pagecount = GetPageCount();
-    
-    var reversepage = pagecount - i + 1;
-    var pageitem = itemcount - reversepage*7;
-    if(pageitem<0)
-    {
-        //pageitem = 0;
-    }
-    ShowItems(pageitem,7);
-    //ShowItems(i*7,7);
+function RemoveWord(id,word){
+	//Debug("Remove:id:"+id);
+	var p=document.getElementById("div_words");
+	var div=document.getElementById(id);
+	p.removeChild(div);
+	db.DeleteWord(word);
+	ShowPage(currentpage);
 }
-function ShowPrev()
-{
-    currentpage--;
-    if(currentpage<=0)
-    {
-        currentpage = 0;
-    }
-    ShowPage(currentpage);
+
+function ShowFrame(w){
+	//Debug(count);
+	var frame=$("frame_"+w);
+	if(frame){
+		if(frame.fold){
+			frame.style.width = '95%';
+			frame.style.height = '209px';
+			db.IncreaseTranslateCount(w);
+			var span=$('count_'+w);
+			if(span){
+				var c=parseInt(span.innerHTML)+1;
+				span.innerHTML=c;
+			}
+		}else{
+			frame.style.width = '0px';
+			frame.style.height = '0px';
+		}
+		frame.fold=!frame.fold;
+	}
 }
-function ShowNext()
-{
-    currentpage++;
-    if(currentpage>=GetPageCount())
-    {
-        currentpage = GetPageCount();
-    }
-    ShowPage(currentpage);
+
+function AddFrame(div,word){
+	div.appendChild(CreateTranslateFrame(word));
+}
+
+function ListWordPageList(pageIndex){
+	var orderKey=GetGroupValue("rdOrderKey");
+	orderKey=orderKey?orderKey:"translateCount";
+	var order=GetGroupValue("rdOrder");
+	order=order?order:"desc";
+
+	document.getElementById("div_words").innerHTML = "";
+	db.GetRows(pageIndex,PAGE_SIZE,orderKey,order,function(rs){
+						//Debug('add');
+						if(!rs)
+							return;
+						var reg = new RegExp(rs.word,"gim");	
+						var div = document.createElement("div");
+						var sourceDiv='';
+						var sen='';
+						if(rs.pageUrl && rs.pageUrl.indexOf('http')==0)//取词的来源可能不是普通Web页面.
+							sourceDiv='<div class="opBtn"><a href="'+rs.pageUrl+'" title="打开取词网页" target="_blank"><image src="go.png"></a></div>';
+						if(rs.sentence)	
+							sen=rs.sentence.replace(reg,"<b><font color='red'>"+rs.word+"</font></b>");
+						div.id = "div_newword_" + rs.id;
+						div.className="lineBlock";
+						div.innerHTML='<div class="wordTitle">'
+											+'<div class="keyWord">'+rs.word+'</div>'
+											+sourceDiv
+											+'<div class="opBtn"><a title="记住了" onclick=\'SetRemember("'+rs.word+'")\' href="#"><image src="tick.png"></a></div>'
+											+'<div class="opBtn"><a title="删除" onclick=\'RemoveWord("'+div.id+'","'+  rs.word+ '")\' href="#"><image src="del.png"></a></div>'
+											+'<div class="opBtn"><a title="查询" onclick=\'ShowFrame("'+rs.word+'")\' href="#"><image src="search.png"></a></div>'
+											+'<div class="opBtn">次数:<span id="count_'+rs.word+'">'+rs.translateCount+'</span></div>'
+											+'<div class="opBtn">'+new Date(rs.addTime).format("yyyy/MM/dd hh:mm")+'</div>'
+										+'</div>'
+										+'<div style="font-size:13px;">'+sen+'</div>'
+										+'<div onclick=\'AddFrame(this,"'+rs.word+'")\'></div>';
+						$("div_words").appendChild(div);	
+						var arr=div.getElementsByTagName("div");
+						if(arr.length>0){
+							arr[arr.length-1].onclick();
+						}
+					}
+				);
+}
+
+function ShowPage(i){
+	GetPageCount(function(result){
+					//Debug(result);
+					if(result<i)
+						return;
+					document.getElementById("itemcount").innerHTML = (result+1) + "页之" + (i+1);
+					ListWordPageList(i);
+				}
+	)
+}
+
+function ShowPrevPage(){
+	if(currentpage>0){
+		currentpage--;
+		ShowPage(currentpage);
+	}
+}
+
+function ShowNextPage(){
+	GetPageCount(function(result){
+		var nextpage=currentpage+1;
+		if(nextpage<=result){
+			currentpage++;
+			ShowPage(currentpage);
+		}
+		}
+	);	
+}
+
+function Debug(str){
+	var s=$("debug").innerHTML;
+	$("debug").innerHTML=s+"<br>"+str;
 }
 </script>
-
+</head>
+<body>
+	<div id="debug"></div>
+    <div id="main_container">
+        <table width="100%" valign="top">
+            <tr>
+                <td>
+                    <h1>
+                        <img src="logo.png" width="30" />OnlineDict 单词记忆助手</h1>
+                </td>
+                <td align="right">
+                    <p>
+                        <a href="./options.htm" target="_blank">选项</a> | <a href="http://code.google.com/p/onlinedict/"
+                            target="_blank">OnlineDict主页</a></p>
+                </td>
+            </tr>
+        </table>
+        <table cellpadding="5" class="settings-table">
+            <tr>
+                <td valign="top" width="75%">
+                    <table width="100%">
+                        <tr>
+                            <td>
+                                排序:
+                                <input name="rdOrderKey" type="radio" value="translateCount" checked="true" onclick="SetOrder()">取词次数
+                                <input name="rdOrderKey" type="radio" value="addTime" onclick="SetOrder()">取词时间
+                                <input name="rdOrderKey" type="radio" value="word" onclick="SetOrder()">单词
+								&nbsp;&nbsp;&nbsp;&nbsp;
+								<input name="rdOrder" type="radio" checked="true" value="desc" onclick="SetOrder()">降序
+								<input name="rdOrder" type="radio" value="asc" onclick="SetOrder()">升序
+                            </td>
+                            <td align="right">
+                                <input type="button" value="上一页" onclick="ShowPrevPage()" /><input type="button" value="下一页"
+                                    onclick="ShowNextPage()" />
+                            </td>
+                            <td align="left">
+                                <div id="itemcount" align="left">
+                                    共N条</div>
+                            </td>
+                        </tr>
+                    </table>
+                    <div id="div_words">
+                    </div>
+                </td>
+            </tr>
+        </table>
 </body>
 </html>

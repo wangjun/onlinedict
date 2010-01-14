@@ -198,8 +198,8 @@ function createPopUp(word,senctence, x, y, screenX, screenY) {
   
   last_word = word;
   
-  var frame_height = 180;
-  var frame_width = 200;
+  var frame_height = 220;
+  var frame_width = 280;
   var div_height = 20;
   
   frame = document.createElement('iframe');
@@ -212,20 +212,20 @@ function createPopUp(word,senctence, x, y, screenX, screenY) {
   frame.style.position = 'absolute';
   frame.style.width = frame_width + 'px';
   frame.style.height = frame_height + 'px';
-  frame.style.border = '1px solid ' + colors[optVal("color_type")][1];//optVal("links_color");
+  //frame.style.border = '1px solid ' + colors[optVal("color_type")][1];//optVal("links_color");
+  frame.style.border = '1px solid #767676';
   frame.style.zIndex = '65535';
-  frame.style.backgroundColor = colors[optVal("color_type")][0];//'#DCF6DB';
-  //frame.style.backgroundColor = '#7CBE80';
-  //frame.style.backgroundColor = '#90EE90';
-  //frame.style.backgroundColor = '#008000';
+  //frame.style.backgroundColor = colors[optVal("color_type")][0];//'#DCF6DB';
+  frame.style.backgroundColor = '#EFF0F6';
+  frame.style.font="Georgia, serif";
+  frame.style.borderRadius ="4px";// round border,not support IE
   body.appendChild(frame);
-  
   SaveNewWord(word,senctence,window.location.href,0);
   
   last_frame = frame;
   return;
   
-  
+  /*
   var div_toolbar = document.createElement('div');
   //div_toolbar.src = 'http://dict.cn/mini.php?q=' + escape(word);
   div_toolbar.innerHTML = "<img id='tool_pin" + div_num + "' src='" + chrome.extension.getURL("pin.png") + "'>"
@@ -247,4 +247,5 @@ function createPopUp(word,senctence, x, y, screenX, screenY) {
   document.getElementById('tool_disable' + div_num).addEventListener("mouseup",tool_disable, false);
   
   div_num++;
+  */
 }

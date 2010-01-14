@@ -1,186 +1,130 @@
-﻿
-function AddWord(word,sentence,pageUrl,pos)
-{
-    DBAddItem([(new Date()).getTime(),word,sentence,0,pageUrl,pos]);
+﻿/*	OnlineDict词典数据库操作
+*	author: haozes@gmail.com
+*	date:2010/01/13
+*/
+var Class = {
+  create: function() {
+    return function() {
+      this.initialize.apply(this, arguments);
+    }
+  }
 }
-
-function DBSetRemember(id)
+var DictDB=Class.create();
+DictDB.prototype=
 {
-    var item = DBGetItem(id);
-    item[3] = 1;
-    DBUpdateItem(id,item);
-}
-
-////////////////////////////////////////////////////////////////////////
-var BLOCK_ITEM_COUNT = 10; //一个块里，最多多少条目
-var MAX_BLOCK_COUNT = 100;  //最多多少个块
-var DB_INFO =
-{
-    "idBegin":0,
-    "itemCount":0,
-    "lastBlockId":0,
+	initialize: function() {
+		this.dbName='dict';
+		this.db=null;
+	},
+	init:function(){
+		if (window.openDatabase){
+			this.db = window.openDatabase(this.dbName, "1.0",this.dbName, 1024*1024);
+			if(!db)
+				console.log(result);(this,'Cannot openDatabase,maybe the browser do not support HTML5');
+			this.db.transaction(function(query) {
+					query.executeSql('CREATE TABLE IF NOT EXISTS [dict] ('
+									  +'[id] INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,' 
+									  +'[word] NVARCHAR(30) NOT NULL,' 
+									  +'[sentence] NVARCHAR(600),' 
+									  +'[pageUrl] NVARCHAR(200),' 
+									  +'[addTime] DATETIME,' 
+									  +'[translateCount] INT DEFAULT 1)',
+									[]);
+					});
+		}	
+	},
+	Exec:function(sql,para,transHandler,errHandler){
+			this.db.transaction(function(query) {
+				query.executeSql(sql,
+								para,
+								function(transaction, result) {
+									console.log(result);
+									if(transHandler)
+										transHandler(result);
+								},
+								function(transaction, error) {
+									console.log(error);
+									if(errHandler)
+										errHandler(error);
+								});
+			});
+	},
+	NewWord:function(word,sen,url){
+		console.log("add word");
+		this.Exec('INSERT INTO dict(word, sentence,pageUrl,addTime,translateCount) VALUES (?,?,?,?,?)'
+				,[word, sen,url,(new Date()).getTime(),1]);
+	},
+	Update: function(word, sen, url) {
+		this.Exec('UPDATE  dict SET sentence=?,pageUrl=?,addTime=?,translateCount=translateCount+1 WHERE word=?'
+				,[sen,url,(new Date()).getTime(),word]);
+	},
+	IncreaseTranslateCount:function(word){
+		this.Exec('UPDATE  dict SET translateCount=translateCount+1 WHERE word=?'
+				,[word]);
+	},
+	DecreaseTranslateCount:function(word){
+			this.Exec('UPDATE  dict SET translateCount=translateCount-1 WHERE word=?'
+				,[word]);
+	},
+	GetWord:function(word,fun){
+			var w=null;
+			this.Exec('SELECT * FROM dict WHERE word=?'
+				,[word]
+				,function(result){
+									if(result.rows.length>0){
+										var row=result.rows.item(0);
+										console.log(row);
+										w = {
+												id: row['id'],
+												word: row['title'],
+												sentence: row['body'],
+												pageUrl:row['pageUrl'],
+												addTime:row['addTime'],
+												translateCount:row['translateCount']
+											};
+									}
+									return fun(w);
+								}
+			);
+	},
+	DeleteWord:function(word){
+				this.Exec('DELETE FROM dict WHERE word=?'
+				,[word]);
+	},
+	GetRows:function(pageIndex,pageSize,orderKey,order,fun){
+		if(!order)
+			order='desc';
+		if(!orderKey)
+			orderKey='translateCount';
+		var offset = pageSize * pageIndex;
+		var w=null;
+		this.Exec('SELECT * FROM dict order by '+orderKey+' '+order+' limit '+offset+','+pageSize+''
+				,[]
+				,function(result) {
+						for(var i=0;i<result.rows.length;i++){
+							var row = result.rows.item(i)
+							w = {
+								id: row['id'],
+								word: row['word'],
+								sentence: row['sentence'],
+								pageUrl:row['pageUrl'],
+								addTime:row['addTime'],
+								translateCount:row['translateCount']
+							}
+							console.log(w);
+							fun(w);
+						}
+				}
+		);
+	},
+	GetTotalCount:function(fun){
+		this.Exec('SELECT COUNT(1) as num FROM dict'
+			,[]
+			,function(result){
+				console.log(result.rows.length);
+				var count=result.rows.item(0)['num'];
+				fun(count);
+			}
+		);
+	}
 };
-
-function _DBReadInfo()
-{
-  var oldDB = localStorage["_DBInfo"];
-  if(oldDB)
-  {
-      DB_INFO = JSON.parse(oldDB);
-  }
-  return DB_INFO;
-}
-
-function _DBSaveInfo()
-{
-  localStorage["_DBInfo"] = JSON.stringify(DB_INFO);
-}
-
-function _DBReadBlock(idBlock)
-{
-  _DBReadInfo();
-  //alert(DB_INFO["lastBlockId"] + "," + idBlock);
-  //if(DB_INFO["lastBlockId"]>idBlock)
-  //{
-  //  return null;
-  //}
-  var dbWords = [];
-  var oldDB = localStorage["dbData_" + idBlock];
-  //alert("oldDB:" + oldDB);
-  if(oldDB)
-  {
-      dbWords = JSON.parse(oldDB);
-  }
-  return dbWords;
-}
-
-function _DBSaveBlock(idBlock,items)
-{
-  localStorage["dbData_" + idBlock] = JSON.stringify(items);
-}
-
-function DBGetRange()
-{
-  return _DBReadInfo();
-}
-
-function DBGetItem(id)
-{
-  var blockId = Math.floor(id/BLOCK_ITEM_COUNT);
-  //alert("id%BLOCK_ITEM_COUNT:" + id%BLOCK_ITEM_COUNT + "," + blockId);
-  var items = _DBReadBlock(blockId);
-  if(!items)
-  {
-    alert("id=" + id + ",block=" + blockId);
-    return null;
-  }
-  if(items.length<=id%BLOCK_ITEM_COUNT)
-  {
-      alert("len=" + items.length + " blockId=" + blockId + " id=" + id%BLOCK_ITEM_COUNT);
-      alert(items[id%BLOCK_ITEM_COUNT]);
-      return null;
-  }
-  //alert(items.length + " - " + id%BLOCK_ITEM_COUNT);
-  return items[id%BLOCK_ITEM_COUNT];
-}
-
-function DBUpdateItem(id,item)
-{
-  var blockId = Math.floor(id/BLOCK_ITEM_COUNT);
-  var items = _DBReadBlock(blockId);
-  if(!items)
-  {
-    alert("error:items null");
-    return false;
-  }
-  if(items.length<=id%BLOCK_ITEM_COUNT)
-  {
-    alert("error:items length=" + items.length + ",id=" + id);
-    return false;
-  }
-  items[id%BLOCK_ITEM_COUNT] = item;
-  _DBSaveBlock(blockId,items);
-  //alert(item);
-  return true;
-}
-function DBAddItem(item)
-{
-  _DBReadInfo();
-  var itemId = DB_INFO["itemCount"];
-  var blockId = Math.floor(itemId/BLOCK_ITEM_COUNT);
-  
-  var items = _DBReadBlock(blockId);
-  if(!items)
-  {
-    items = [];
-  }
-  items.push(item);
-  
-  //先保存数据
-  _DBSaveBlock(blockId,items);
-  
-  //再保存索引
-  DB_INFO["itemCount"] = itemId + 1;
-  DB_INFO["lastBlockId"] = blockId;
-  _DBSaveInfo();
-  //alert("item:" + item);
-}
-
-/////////////////////////////////////////////////////
-//一个先进先出队列
-var FIFO_LENGTH = 100;  //队列最大长度
-var FIFO_DBNAME = "_FIFO_LIST";
-function FIFOAddItem(item)
-{
-    var items = _FIFORead();
-    if(items.length>=FIFO_LENGTH)
-    {
-        for(var i=0;i<items.length-1;i++)
-        {
-            items[i] = items[i+1];
-        }
-        items[items.length-1] = item;
-    }
-    else
-    {
-        items.push(item);
-    }
-    
-    _FIFOSave(items);
-}
-function FIFOLength()
-{
-    var items = _FIFORead();
-    return items.length;
-}
-function FIFOItem(id)
-{
-    var items = _FIFORead();
-    return items[id];
-}
-
-function FIFOLastItem()
-{
-  return FIFOItem(FIFOLength()-1);
-}
-
-function FIFOUpdateItem(id,item)
-{
-    var items = _FIFORead();
-    items[id] = item;
-    _FIFOSave(items);
-}
-
-function _FIFOSave(items)
-{
-  localStorage[FIFO_DBNAME] = JSON.stringify(items);
-}
-function _FIFORead()
-{
-  var oldDB = localStorage[FIFO_DBNAME];
-  if(oldDB)
-  {
-    return JSON.parse(oldDB);
-  }
-  return [];
-}

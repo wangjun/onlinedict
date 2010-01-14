@@ -3,10 +3,9 @@ body
   font-size: 12px;
   font-family: "Arial";
   color: #101010;
-  background-color:#cec;
   margin-top: 0px;
-  }
-
+  overflow-x:hidden;
+}
 
 #save_status
 {
@@ -20,8 +19,7 @@ body
 { 
   width: 590px;
   padding: 2px;
-  border: solid 1px #3A3;
-  background-color:#DFD;
+  border: solid 1px #EFEFEF;
  }
 
 .color
@@ -49,3 +47,9 @@ h1
   width: 600px;
   padding-top: 1px;
  }
+.round {
+-moz-border-radius: 8px;
+-khtml-border-radius: 8px;
+-webkit-border-radius: 8px;
+border-radius: 8px;
+} 
