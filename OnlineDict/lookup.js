@@ -223,12 +223,13 @@ function createPopUp(word,senctence, x, y, screenX, screenY) {
   SaveNewWord(word,senctence,window.location.href,0);
   
   last_frame = frame;
-  return;
+  //return;
   
-  /*
+  
   var div_toolbar = document.createElement('div');
   //div_toolbar.src = 'http://dict.cn/mini.php?q=' + escape(word);
-  div_toolbar.innerHTML = "<img id='tool_pin" + div_num + "' src='" + chrome.extension.getURL("pin.png") + "'>"
+  div_toolbar.innerHTML = 
+   "<img id='tool_pin" + div_num + "' src='" + chrome.extension.getURL("pin.png") + "'>"
    + "<img id='tool_disable" + div_num + "' src='" + chrome.extension.getURL("disable.png") +"'>"
    + "<img id='tool_close' src='" + chrome.extension.getURL("close.png") +"'>";
   div_toolbar.style.left = x + 'px';
@@ -247,5 +248,5 @@ function createPopUp(word,senctence, x, y, screenX, screenY) {
   document.getElementById('tool_disable' + div_num).addEventListener("mouseup",tool_disable, false);
   
   div_num++;
-  */
+  
 }
