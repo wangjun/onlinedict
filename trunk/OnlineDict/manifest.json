@@ -1,12 +1,12 @@
-﻿{"name": "OnlineDict-Chrome翻译助手",
- "version": "2.9",
- "description": "翻译任何网页中选中的英文单词(可以选择双击或CTRL+选中)。\r\n主页：http://code.google.com/p/onlinedict",
+﻿{"name": "OnlineDict",
+ "version": "3.1",
+ "description": "Click the word in any page, and the translation will show up. ",
  "icons": { "128": "logo.png"},
  "options_page": "options.htm",
  "browser_action": {
     "default_icon": "logo_small.png",
     "popup": "remember.htm",
-    "default_title":"OnlineDict-翻译助手"
+    "default_title":"OnlineDict - Online dictionary extension"
   },
   "permissions": [
     "tabs",
