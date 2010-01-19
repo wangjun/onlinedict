@@ -89,8 +89,8 @@ DictDB.prototype=
 			);
 	},
 	DeleteWord:function(word){
-				//this.Exec('DELETE FROM dict WHERE word=?',[word]);
-				this.Exec('UPDATE  dict SET translateCount=-1 WHERE word=?',[word]);
+				this.Exec('DELETE FROM dict WHERE word=?',[word]);
+				//this.Exec('UPDATE  dict SET translateCount=-1 WHERE word=?',[word]);
 	},
 	SetRemember:function(word){
 				//this.Exec('DELETE FROM dict WHERE word=?',[word]);
@@ -101,7 +101,7 @@ DictDB.prototype=
 			orderKey='translateCount';
 		var offset = pageSize * pageIndex;
 		var w=null;
-		this.Exec('SELECT * FROM dict  WHERE translateCount>=0 order by '+orderKey+' limit '+offset+','+pageSize
+		this.Exec('SELECT * FROM dict order by '+orderKey+' limit '+offset+','+pageSize
 				,[]
 				,function(result) {
 						for(var i=0;i<result.rows.length;i++){
@@ -121,7 +121,7 @@ DictDB.prototype=
 		);
 	},
 	GetTotalCount:function(fun){
-		this.Exec('SELECT COUNT(1) as num FROM dict WHERE translateCount>=0'
+		this.Exec('SELECT COUNT(1) as num FROM dict'
 			,[]
 			,function(result){
 				console.log(result.rows.length);
