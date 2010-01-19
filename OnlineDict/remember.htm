@@ -94,6 +94,7 @@ var db=new DictDB();
 window.onload = function(){
 	db.init();
 	ShowPage(currentpage);
+	UpdateWordCounts();
 } 
 
 function CreateTranslateFrame(word) {
@@ -136,11 +137,23 @@ function GetPageCount(fun){
 }
 
 function SetRemember(word){
-	db.DecreaseTranslateCount(word);
+	db.SetRemember(word);
 	var span=$('count_'+word);
 	if(span){
-		var c=parseInt(span.innerHTML)-1;
-		span.innerHTML=c;
+		//var c=parseInt(span.innerHTML)-1;
+		//span.innerHTML=c;
+		//span.innerHTML=0;
+		span.innerHTML=TranslateCountToText(0);
+	}
+	UpdateWordCounts();
+}
+function TranslateCountToText(translateCount)
+{
+	if(translateCount>0){
+		return '取词: ' + translateCount +' 次';
+	}
+	else {
+		return '<font color=green>记住了</font>';
 	}
 }
 
@@ -152,9 +165,10 @@ function RemoveWord(id,word){
 	p.removeChild(div);
 	db.DeleteWord(word);
 	ShowPage(currentpage);
+	UpdateWordCounts();
 }
 
-function ShowFrame(w){
+function ShowTranslateFrame(w){
 	//Debug(count);
 	var frame=$("frame_"+w);
 	if(frame){
@@ -164,7 +178,15 @@ function ShowFrame(w){
 			db.IncreaseTranslateCount(w);
 			var span=$('count_'+w);
 			if(span){
-				var c=parseInt(span.innerHTML)+1;
+				var c=parseInt(span.innerHTML);
+				if(c)
+				{
+					c++;
+				}
+				else
+				{
+					c = 1;
+				}
 				span.innerHTML=c;
 			}
 		}else{
@@ -173,6 +195,8 @@ function ShowFrame(w){
 		}
 		frame.fold=!frame.fold;
 	}
+	
+	UpdateWordCounts();
 }
 
 function AddFrame(div,word){
@@ -184,9 +208,19 @@ function ListWordPageList(pageIndex){
 	orderKey=orderKey?orderKey:"translateCount";
 	var order=GetGroupValue("rdOrder");
 	order=order?order:"desc";
+	
+	var orderStr = "";
+	if(orderKey=="translateCount")
+	{
+		orderStr = "translateCount " + order + ",addTime desc"; //先按取词次数排序，再按时间倒序排序
+	}
+	else
+	{
+		orderStr = orderKey + " " + order;
+	}
 
 	document.getElementById("div_words").innerHTML = "";
-	db.GetRows(pageIndex,PAGE_SIZE,orderKey,order,function(rs){
+	db.GetRows(pageIndex,PAGE_SIZE,orderStr,function(rs){
 						//Debug('add');
 						if(!rs)
 							return;
@@ -205,8 +239,8 @@ function ListWordPageList(pageIndex){
 											+sourceDiv
 											+'<div class="opBtn"><a title="记住了" onclick=\'SetRemember("'+rs.word+'")\' href="#"><image src="tick.png"></a></div>'
 											+'<div class="opBtn"><a title="删除" onclick=\'RemoveWord("'+div.id+'","'+  rs.word+ '")\' href="#"><image src="del.png"></a></div>'
-											+'<div class="opBtn"><a title="查询" onclick=\'ShowFrame("'+rs.word+'")\' href="#"><image src="search.png"></a></div>'
-											+'<div class="opBtn">次数:<span id="count_'+rs.word+'">'+rs.translateCount+'</span></div>'
+											+'<div class="opBtn"><a title="查询" onclick=\'ShowTranslateFrame("'+rs.word+'")\' href="#"><image src="search.png"></a></div>'
+											+'<div class="opBtn"><span id="count_'+rs.word+'">'+TranslateCountToText(rs.translateCount)+'</span></div>'
 											+'<div class="opBtn">'+new Date(rs.addTime).format("yyyy/MM/dd hh:mm")+'</div>'
 										+'</div>'
 										+'<div style="font-size:13px;">'+sen+'</div>'
@@ -253,21 +287,39 @@ function Debug(str){
 	var s=$("debug").innerHTML;
 	$("debug").innerHTML=s+"<br>"+str;
 }
+
+function UpdateWordCounts()
+{
+	db.GetNewWordsCount(function(result){
+		var span=$('span_newwords');
+		if(span){
+			span.innerHTML="<font color='red'>" + result + "个</font>新单词";
+		}
+	}
+	)
+	db.GetRememberCount(function(result){
+		var span=$('span_rememberwords');
+		if(span){
+			span.innerHTML="已记住<font color='red'>" + result + "个</font>单词";
+		}
+	}
+	)
+}
 </script>
 </head>
 <body>
 	<div id="debug"></div>
     <div id="main_container">
-        <table width="100%" valign="top">
+        <table width="98%" valign="top">
             <tr>
                 <td>
                     <h1>
-                        <img src="logo.png" width="30" />OnlineDict 单词记忆助手</h1>
+                        <img src="logo.png" width="30" />OnlineDict 单词学习助手</h1>
                 </td>
                 <td align="right">
-                    <p>
-                        <a href="./options.htm" target="_blank">选项</a> | <a href="http://code.google.com/p/onlinedict/"
-                            target="_blank">OnlineDict主页</a></p>
+                    
+                        <a href="./remember.htm" target="_blank">首页</a> | <a href="./options.htm" target="_blank">选项</a> | <a href="http://code.google.com/p/onlinedict/"
+                            target="_blank">OnlineDict主页</a><br/><br/><font color=green><span id='span_newwords'>新单词：0个</span>，<span id='span_rememberwords'>记住了：0个<span></font>
                 </td>
             </tr>
         </table>
