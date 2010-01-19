@@ -48,7 +48,7 @@ ColorsChanged = true;
 chrome.extension.onRequest.addListener(
     function(request, sender, sendResponse)
     {
-        ActiveOptions = JSON.parse(localStorage["ColorOptions"]);
+        //ActiveOptions = JSON.parse(localStorage["ColorOptions"]);
         if (request.init == "init" && ColorsChanged == true)
         {
             sendResponse(
@@ -64,13 +64,29 @@ chrome.extension.onRequest.addListener(
           //alert(request.word);
           //AddWord(request.word,request.sentence,request.wordurl,request.wordpos);
 		  console.log("requst.new");
-		  SaveNewWord(request.word,request.sentence,request.wordurl)
+		  /*SaveNewWord(request.word,request.sentence,request.wordurl)
           sendResponse(
                 {
                     init: "globalPages",
                     saved: "ok"
                 }
             );
+			*/
+		  db.GetWord(request.word,function(res){
+		  //if(res) alert(res.sentence);
+					sendResponse({
+						init: "globalPages",
+						saved: "ok",
+						result:res
+					});
+
+					if(res){
+						db.Update(request.word,request.sentence,request.wordurl);
+					}else{
+						db.NewWord(request.word,request.sentence,request.wordurl);
+					}
+				}
+		  );
         }
     }
 );

@@ -44,6 +44,12 @@ function SaveNewWord(w,s,purl,pos)
     {
       //alert("dream?");
       //alert(response);
+	  if(response.result)
+	  {
+		last_div.innerHTML = '<font color=red>您已取词 ' + response.result.translateCount + ' 次</font>';
+		last_div.style.display = 'block';
+	  }
+	  
     }
 );
 
@@ -225,7 +231,6 @@ function createPopUp(word,senctence, x, y, screenX, screenY) {
   last_frame = frame;
   //return;
   
-  
   var div_toolbar = document.createElement('div');
   //div_toolbar.src = 'http://dict.cn/mini.php?q=' + escape(word);
   div_toolbar.innerHTML = 
@@ -233,14 +238,15 @@ function createPopUp(word,senctence, x, y, screenX, screenY) {
    + "<img id='tool_disable" + div_num + "' src='" + chrome.extension.getURL("disable.png") +"'>"
    + "<img id='tool_close' src='" + chrome.extension.getURL("close.png") +"'>";
   div_toolbar.style.left = x + 'px';
-  div_toolbar.style.top = y + div_height*3/4 + frame_height + 'px';
+  div_toolbar.style.top = y + div_height*3/4 + frame_height + 2 + 'px';
   div_toolbar.style.align = 'right';
   div_toolbar.style.position = 'absolute';
   div_toolbar.style.width = frame.style.width;  
   div_toolbar.style.height = '20px';
-  div_toolbar.style.border = '1px solid ' + colors[optVal("color_type")][1];
-  div_toolbar.style.backgroundColor = colors[optVal("color_type")][1];//'#3A3';
+  div_toolbar.style.border = '1px solid #767676';//'1px solid ' + colors[optVal("color_type")][1];
+  div_toolbar.style.backgroundColor = '#767676';//colors[optVal("color_type")][1];//'#3A3';
   div_toolbar.style.zIndex = '65535';
+  div_toolbar.style.display = 'none';
   body.appendChild(div_toolbar);
   last_div = div_toolbar;
   
