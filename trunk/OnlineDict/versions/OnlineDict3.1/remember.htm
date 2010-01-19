@@ -1,0 +1,359 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-15">
+    <title>OnlineDict 选项页</title>
+    <link rel="stylesheet" type="text/css" href="options.css">
+    <style type='text/css'>
+		a {
+			font-size: 12px;
+			color: #034B81;
+			text-decoration: none;
+		}
+		a:hover {
+			text-decoration: none;
+		}
+        .lineBlock
+        {
+            margin-bottom: 3px;
+			padding-bottom:3px;
+        }
+        .wordTitle
+        {
+            background-color: #F4F6FC;
+			padding-bottom:3px;
+			padding-top:3px;
+        }
+        .keyWord
+        {
+            display: inline;
+			font-weight: bold;
+            font-size: 16px;
+        }
+        .opBtn
+        {
+            display: inline;
+            float: right;
+            padding-left: 15px;
+        }
+    </style>
+	<script type="text/javascript" src="newwords.js"></script>
+<script> 
+/* util script start*/
+function $(element) {
+  if (typeof element == 'string')
+   return document.getElementById(element);
+}
+function GetGroupValue(groupName){
+	var group=document.getElementsByName(groupName);
+	if(!group)
+		return null;
+	for(var i=0;i<group.length;i++){
+		if(group[i].checked)
+			return group[i].value;
+	}
+	return null;
+}
+/*
+hide=function(element) {
+  $(element).style.display = 'none';
+  return element;
+}
+
+show=function(element) {
+  $(element).style.display = '';
+  return element;
+}
+*/
+Date.prototype.format = function(format)  
+{  
+   var o = {  
+     "M+" : this.getMonth()+1, //month  
+     "d+" : this.getDate(),    //day  
+     "h+" : this.getHours(),   //hour  
+     "m+" : this.getMinutes(), //minute  
+     "s+" : this.getSeconds(), //second  
+     "q+" : Math.floor((this.getMonth()+3)/3), //quarter  
+     "S" : this.getMilliseconds() //millisecond  
+   }  
+   if(/(y+)/.test(format)) format=format.replace(RegExp.$1,  
+     (this.getFullYear()+"").substr(4 - RegExp.$1.length));  
+   for(var k in o)if(new RegExp("("+ k +")").test(format))  
+     format = format.replace(RegExp.$1,  
+       RegExp.$1.length==1 ? o[k] :   
+         ("00"+ o[k]).substr((""+ o[k]).length));  
+   return format;  
+} 
+/* util script end*/
+
+var currentpage = 0;
+var PAGE_SIZE=7;
+var db=new DictDB();
+
+window.onload = function(){
+	db.init();
+	ShowPage(currentpage);
+	UpdateWordCounts();
+} 
+
+function CreateTranslateFrame(word) {
+  var frame_height = 280;
+  var frame_width = 200;
+  var div_height = 20;
+  
+  var frame = document.createElement('iframe');
+  frame.src = 'http://dict.cn/mini.php?q=' + word;
+  frame.id = 'frame_'+word;
+  frame.fold=true;
+  
+  frame.style.left = '10px';
+  frame.style.top = '10px';
+  frame.style.width = '0px';
+  frame.style.height = '0px';
+  frame.style.border = '0px solid ';
+  return frame;
+}
+
+function SetOrder(){
+	ShowPage(currentpage);
+}
+
+function GetPageCount(fun){
+	db.GetTotalCount(function(result){
+						var itemcount = result;
+						if(itemcount<=0)
+						{
+							fun(0);
+						}
+						var flr = Math.floor(itemcount/PAGE_SIZE);
+						if(0==itemcount%PAGE_SIZE)
+						{
+							flr -= 1;
+						}
+						fun(flr);
+					}
+	)
+}
+
+function SetRemember(word){
+	db.SetRemember(word);
+	var span=$('count_'+word);
+	if(span){
+		//var c=parseInt(span.innerHTML)-1;
+		//span.innerHTML=c;
+		//span.innerHTML=0;
+		span.innerHTML=TranslateCountToText(0);
+	}
+	UpdateWordCounts();
+}
+function TranslateCountToText(translateCount)
+{
+	if(translateCount>1){
+		return '<font color=red>' + translateCount +'</font> 次取词';
+	}
+	else if(translateCount>0){
+		return translateCount +' 次取词';
+	}
+	else {
+		return '<font color=green>记住了</font>';
+	}
+}
+
+
+function RemoveWord(id,word){
+	//Debug("Remove:id:"+id);
+	var p=document.getElementById("div_words");
+	var div=document.getElementById(id);
+	p.removeChild(div);
+	db.DeleteWord(word);
+	ShowPage(currentpage);
+	UpdateWordCounts();
+}
+
+function ShowTranslateFrame(w){
+	//Debug(count);
+	var frame=$("frame_"+w);
+	if(frame){
+		if(frame.fold){
+			frame.style.width = '95%';
+			frame.style.height = '209px';
+			db.IncreaseTranslateCount(w);
+			var span=$('count_'+w);
+			if(span){
+				var c=parseInt(span.innerHTML);
+				if(c)
+				{
+					c++;
+				}
+				else
+				{
+					c = 1;
+				}
+				span.innerHTML=c;
+			}
+		}else{
+			frame.style.width = '0px';
+			frame.style.height = '0px';
+		}
+		frame.fold=!frame.fold;
+	}
+	
+	UpdateWordCounts();
+}
+
+function AddFrame(div,word){
+	div.appendChild(CreateTranslateFrame(word));
+}
+
+function ListWordPageList(pageIndex){
+	var orderKey=GetGroupValue("rdOrderKey");
+	orderKey=orderKey?orderKey:"translateCount";
+	var order=GetGroupValue("rdOrder");
+	order=order?order:"desc";
+	
+	var orderStr = "";
+	if(orderKey=="translateCount")
+	{
+		orderStr = "translateCount " + order + ",addTime desc"; //先按取词次数排序，再按时间倒序排序
+	}
+	else
+	{
+		orderStr = orderKey + " " + order;
+	}
+
+	document.getElementById("div_words").innerHTML = "";
+	db.GetRows(pageIndex,PAGE_SIZE,orderStr,function(rs){
+						//Debug('add');
+						if(!rs)
+							return;
+						var reg = new RegExp(rs.word,"gim");	
+						var div = document.createElement("div");
+						var sourceDiv='';
+						var sen='';
+						if(rs.pageUrl && rs.pageUrl.indexOf('http')==0)//取词的来源可能不是普通Web页面.
+							sourceDiv='<div class="opBtn"><a href="'+rs.pageUrl+'" title="打开取词网页" target="_blank"><image src="go.png"></a></div>';
+						if(rs.sentence)	
+							sen=rs.sentence.replace(reg,"<b><font color='red'>"+rs.word+"</font></b>");
+						div.id = "div_newword_" + rs.id;
+						div.className="lineBlock";
+						div.innerHTML='<div class="wordTitle">'
+											+'<div class="keyWord">'+rs.word+'</div>'
+											+sourceDiv
+											+'<div class="opBtn"><a title="记住了" onclick=\'SetRemember("'+rs.word+'")\' href="#"><image src="tick.png"></a></div>'
+											+'<div class="opBtn"><a title="删除" onclick=\'RemoveWord("'+div.id+'","'+  rs.word+ '")\' href="#"><image src="del.png"></a></div>'
+											+'<div class="opBtn"><a title="查询" onclick=\'ShowTranslateFrame("'+rs.word+'")\' href="#"><image src="search.png"></a></div>'
+											+'<div class="opBtn"><span id="count_'+rs.word+'">'+TranslateCountToText(rs.translateCount)+'</span></div>'
+											+'<div class="opBtn">'+new Date(rs.addTime).format("MM/dd hh:mm")+'</div>'
+										+'</div>'
+										+'<div style="font-size:13px;">'+sen+'</div>'
+										+'<div onclick=\'AddFrame(this,"'+rs.word+'")\'></div>';
+						$("div_words").appendChild(div);	
+						var arr=div.getElementsByTagName("div");
+						if(arr.length>0){
+							arr[arr.length-1].onclick();
+						}
+					}
+				);
+}
+
+function ShowPage(i){
+	GetPageCount(function(result){
+					//Debug(result);
+					if(result<i)
+						return;
+					document.getElementById("itemcount").innerHTML = (result+1) + "页之" + (i+1);
+					ListWordPageList(i);
+				}
+	)
+}
+
+function ShowPrevPage(){
+	if(currentpage>0){
+		currentpage--;
+		ShowPage(currentpage);
+	}
+}
+
+function ShowNextPage(){
+	GetPageCount(function(result){
+		var nextpage=currentpage+1;
+		if(nextpage<=result){
+			currentpage++;
+			ShowPage(currentpage);
+		}
+		}
+	);	
+}
+
+function Debug(str){
+	var s=$("debug").innerHTML;
+	$("debug").innerHTML=s+"<br>"+str;
+}
+
+function UpdateWordCounts()
+{
+	db.GetNewWordsCount(function(result){
+		var span=$('span_newwords');
+		if(span){
+			span.innerHTML="<font color='red'>" + result + "个</font>新单词";
+		}
+	}
+	)
+	db.GetRememberCount(function(result){
+		var span=$('span_rememberwords');
+		if(span){
+			span.innerHTML="已记住<font color='red'>" + result + "个</font>单词";
+		}
+	}
+	)
+}
+</script>
+</head>
+<body>
+	<div id="debug"></div>
+    <div id="main_container">
+        <table width="98%" valign="top">
+            <tr>
+                <td>
+                    <h1>
+                        <img src="logo.png" width="30" />OnlineDict 单词学习助手</h1>
+                </td>
+                <td align="right">
+                    
+                        <a href="./remember.htm" target="_blank">首页</a> | <a href="./options.htm" target="_blank">选项</a> | <a href="http://code.google.com/p/onlinedict/"
+                            target="_blank">OnlineDict主页</a><br/><br/><font color=green><span id='span_newwords'>新单词：0个</span>，<span id='span_rememberwords'>记住了：0个<span></font>
+                </td>
+            </tr>
+        </table>
+        <table cellpadding="5" class="settings-table">
+            <tr>
+                <td valign="top" width="75%">
+                    <table width="100%">
+                        <tr>
+                            <td>
+                                排序:
+                                <input name="rdOrderKey" type="radio" value="translateCount" checked="true" onclick="SetOrder()">取词次数
+                                <input name="rdOrderKey" type="radio" value="addTime" onclick="SetOrder()">取词时间
+                                <input name="rdOrderKey" type="radio" value="word" onclick="SetOrder()">单词
+								&nbsp;&nbsp;&nbsp;&nbsp;
+								<input name="rdOrder" type="radio" checked="true" value="desc" onclick="SetOrder()">降序
+								<input name="rdOrder" type="radio" value="asc" onclick="SetOrder()">升序
+                            </td>
+                            <td align="right">
+                                <input type="button" value="上一页" onclick="ShowPrevPage()" /><input type="button" value="下一页"
+                                    onclick="ShowNextPage()" />
+                            </td>
+                            <td align="left">
+                                <div id="itemcount" align="left">
+                                    共N条</div>
+                            </td>
+                        </tr>
+                    </table>
+                    <div id="div_words">
+                    </div>
+                </td>
+            </tr>
+        </table>
+</body>
+</html>
