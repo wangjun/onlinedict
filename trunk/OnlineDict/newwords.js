@@ -43,6 +43,7 @@ DictDB.prototype=
 										transHandler(result);
 								},
 								function(transaction, error) {
+									console.log(sql);
 									console.log(error);
 									if(errHandler)
 										errHandler(error);
@@ -88,17 +89,19 @@ DictDB.prototype=
 			);
 	},
 	DeleteWord:function(word){
-				this.Exec('DELETE FROM dict WHERE word=?'
-				,[word]);
+				//this.Exec('DELETE FROM dict WHERE word=?',[word]);
+				this.Exec('UPDATE  dict SET translateCount=-1 WHERE word=?',[word]);
 	},
-	GetRows:function(pageIndex,pageSize,orderKey,order,fun){
-		if(!order)
-			order='desc';
+	SetRemember:function(word){
+				//this.Exec('DELETE FROM dict WHERE word=?',[word]);
+				this.Exec('UPDATE  dict SET translateCount=0 WHERE word=?',[word]);
+	},
+	GetRows:function(pageIndex,pageSize,orderKey,fun){
 		if(!orderKey)
 			orderKey='translateCount';
 		var offset = pageSize * pageIndex;
 		var w=null;
-		this.Exec('SELECT * FROM dict order by '+orderKey+' '+order+' limit '+offset+','+pageSize+''
+		this.Exec('SELECT * FROM dict  WHERE translateCount>=0 order by '+orderKey+' limit '+offset+','+pageSize
 				,[]
 				,function(result) {
 						for(var i=0;i<result.rows.length;i++){
@@ -118,7 +121,27 @@ DictDB.prototype=
 		);
 	},
 	GetTotalCount:function(fun){
-		this.Exec('SELECT COUNT(1) as num FROM dict'
+		this.Exec('SELECT COUNT(1) as num FROM dict WHERE translateCount>=0'
+			,[]
+			,function(result){
+				console.log(result.rows.length);
+				var count=result.rows.item(0)['num'];
+				fun(count);
+			}
+		);
+	},
+	GetRememberCount:function(fun){
+		this.Exec('SELECT COUNT(1) as num FROM dict WHERE translateCount=0'
+			,[]
+			,function(result){
+				console.log(result.rows.length);
+				var count=result.rows.item(0)['num'];
+				fun(count);
+			}
+		);
+	},
+	GetNewWordsCount:function(fun){
+		this.Exec('SELECT COUNT(1) as num FROM dict WHERE translateCount>0'
 			,[]
 			,function(result){
 				console.log(result.rows.length);
