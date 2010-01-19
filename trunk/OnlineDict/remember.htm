@@ -149,8 +149,11 @@ function SetRemember(word){
 }
 function TranslateCountToText(translateCount)
 {
-	if(translateCount>0){
-		return '取词: ' + translateCount +' 次';
+	if(translateCount>1){
+		return '<font color=red>' + translateCount +'</font> 次取词';
+	}
+	else if(translateCount>0){
+		return translateCount +' 次取词';
 	}
 	else {
 		return '<font color=green>记住了</font>';
@@ -241,7 +244,7 @@ function ListWordPageList(pageIndex){
 											+'<div class="opBtn"><a title="删除" onclick=\'RemoveWord("'+div.id+'","'+  rs.word+ '")\' href="#"><image src="del.png"></a></div>'
 											+'<div class="opBtn"><a title="查询" onclick=\'ShowTranslateFrame("'+rs.word+'")\' href="#"><image src="search.png"></a></div>'
 											+'<div class="opBtn"><span id="count_'+rs.word+'">'+TranslateCountToText(rs.translateCount)+'</span></div>'
-											+'<div class="opBtn">'+new Date(rs.addTime).format("yyyy/MM/dd hh:mm")+'</div>'
+											+'<div class="opBtn">'+new Date(rs.addTime).format("MM/dd hh:mm")+'</div>'
 										+'</div>'
 										+'<div style="font-size:13px;">'+sen+'</div>'
 										+'<div onclick=\'AddFrame(this,"'+rs.word+'")\'></div>';
