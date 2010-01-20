@@ -46,7 +46,7 @@ function SaveNewWord(w,s,purl,pos)
       //alert(response);
 	  if(response.result)
 	  {
-		last_div.innerHTML = '<font color=red>您已取词 ' + response.result.translateCount + ' 次</font>';
+		last_div.innerHTML = '<font color=red>重复取词： ' + response.result.word + " "+ response.result.translateCount + ' 次</font><br/>' +  response.result.sentence;
 		last_div.style.display = 'block';
 	  }
 	  
@@ -242,7 +242,8 @@ function createPopUp(word,senctence, x, y, screenX, screenY) {
   div_toolbar.style.align = 'right';
   div_toolbar.style.position = 'absolute';
   div_toolbar.style.width = frame.style.width;  
-  div_toolbar.style.height = '20px';
+  div_toolbar.style.font_size = "13px;"
+  //div_toolbar.style.height = '20px';
   div_toolbar.style.border = '1px solid #767676';//'1px solid ' + colors[optVal("color_type")][1];
   div_toolbar.style.backgroundColor = '#767676';//colors[optVal("color_type")][1];//'#3A3';
   div_toolbar.style.zIndex = '65535';
