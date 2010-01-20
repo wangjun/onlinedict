@@ -97,22 +97,28 @@ window.onload = function(){
 	UpdateWordCounts();
 } 
 
-function CreateTranslateFrame(word) {
+function CreateTranslateFrame(id) {
   var frame_height = 280;
   var frame_width = 200;
   var div_height = 20;
   
-  var frame = document.createElement('iframe');
-  frame.src = 'http://dict.cn/mini.php?q=' + word;
-  frame.id = 'frame_'+word;
-  frame.fold=true;
+  db.FindWordByID(id,function(rs){
+	  var frame = document.createElement('iframe');
+	  frame.src = 'http://dict.cn/mini.php?q=' + rs.word;
+	  frame.id = 'frame_'+rs.id;
+	  frame.fold=false;
+	  
+	  frame.style.left = '10px';
+	  frame.style.top = '10px';
+	  frame.style.width = '95%';
+	  frame.style.height = '209px';
+	  frame.style.border = '0px solid ';
+	  //return frame;
+	  var p=document.getElementById("div_words");
+	  var div=document.getElementById("div_newword_" + id);
+	  div.appendChild(frame);
+  });
   
-  frame.style.left = '10px';
-  frame.style.top = '10px';
-  frame.style.width = '0px';
-  frame.style.height = '0px';
-  frame.style.border = '0px solid ';
-  return frame;
 }
 
 function SetOrder(){
@@ -136,15 +142,13 @@ function GetPageCount(fun){
 	)
 }
 
-function SetRemember(word){
-	db.SetRemember(word);
-	var span=$('count_'+word);
+function SetRemember(id){
+	db.SetRemember(id);
+	/*var span=$('count_'+id);
 	if(span){
-		//var c=parseInt(span.innerHTML)-1;
-		//span.innerHTML=c;
-		//span.innerHTML=0;
 		span.innerHTML=TranslateCountToText(0);
-	}
+	}*/
+	UpdateTranslateCounts(id);
 	UpdateWordCounts();
 }
 function TranslateCountToText(translateCount)
@@ -161,49 +165,55 @@ function TranslateCountToText(translateCount)
 }
 
 
-function RemoveWord(id,word){
+function RemoveWord(id){
 	//Debug("Remove:id:"+id);
-	var p=document.getElementById("div_words");
-	var div=document.getElementById(id);
-	p.removeChild(div);
-	db.DeleteWord(word);
+	//var p=document.getElementById("div_words");
+	//var div=document.getElementById("div_newword_" + id);
+	//p.removeChild(div);
+	db.DeleteWord(id);
 	ShowPage(currentpage);
 	UpdateWordCounts();
 }
 
-function ShowTranslateFrame(w){
+function ShowTranslateFrame(id){
 	//Debug(count);
-	var frame=$("frame_"+w);
+	var frame=$("frame_"+id);
 	if(frame){
 		if(frame.fold){
 			frame.style.width = '95%';
 			frame.style.height = '209px';
-			db.IncreaseTranslateCount(w);
-			var span=$('count_'+w);
+			db.IncreaseTranslateCount(id);
+			/*var span=$('count_'+id);
 			if(span){
 				var c=parseInt(span.innerHTML);
 				if(c)
 				{
-					c++;
+					c = c+1;
 				}
 				else
 				{
 					c = 1;
 				}
-				span.innerHTML=c;
-			}
+				span.innerHTML=TranslateCountToText(c);
+			}*/
+			UpdateTranslateCounts(id);
 		}else{
 			frame.style.width = '0px';
 			frame.style.height = '0px';
 		}
 		frame.fold=!frame.fold;
 	}
+	else
+	{
+		CreateTranslateFrame(id);
+	}
 	
 	UpdateWordCounts();
 }
 
 function AddFrame(div,word){
-	div.appendChild(CreateTranslateFrame(word));
+	//div.appendChild(CreateTranslateFrame(word));
+	Debug("addframe");
 }
 
 function ListWordPageList(pageIndex){
@@ -232,7 +242,7 @@ function ListWordPageList(pageIndex){
 						var sourceDiv='';
 						var sen='';
 						if(rs.pageUrl && rs.pageUrl.indexOf('http')==0)//取词的来源可能不是普通Web页面.
-							sourceDiv='<div class="opBtn"><a href="'+rs.pageUrl+'" title="打开取词网页" target="_blank"><image src="go.png"></a></div>';
+							sourceDiv='<div class="opBtn"><a href="'+rs.pageUrl+'" title="'+rs.pageUrl+'" target="_blank"><image src="go.png"></a></div>';
 						if(rs.sentence)	
 							sen=rs.sentence.replace(reg,"<b><font color='red'>"+rs.word+"</font></b>");
 						div.id = "div_newword_" + rs.id;
@@ -240,19 +250,19 @@ function ListWordPageList(pageIndex){
 						div.innerHTML='<div class="wordTitle">'
 											+'<div class="keyWord">'+rs.word+'</div>'
 											+sourceDiv
-											+'<div class="opBtn"><a title="记住了" onclick=\'SetRemember("'+rs.word+'")\' href="#"><image src="tick.png"></a></div>'
-											+'<div class="opBtn"><a title="删除" onclick=\'RemoveWord("'+div.id+'","'+  rs.word+ '")\' href="#"><image src="del.png"></a></div>'
-											+'<div class="opBtn"><a title="查询" onclick=\'ShowTranslateFrame("'+rs.word+'")\' href="#"><image src="search.png"></a></div>'
-											+'<div class="opBtn"><span id="count_'+rs.word+'">'+TranslateCountToText(rs.translateCount)+'</span></div>'
+											+'<div class="opBtn"><a title="记住了" onclick=\'SetRemember("'+rs.id+'")\' href="#"><image src="tick.png"></a></div>'
+											+'<div class="opBtn"><a title="删除" onclick=\'RemoveWord("'+rs.id+ '")\' href="#"><image src="del.png"></a></div>'
+											+'<div class="opBtn"><a title="查询" onclick=\'ShowTranslateFrame("'+rs.id+'")\' href="#"><image src="search.png"></a></div>'
+											+'<div class="opBtn"><span id="count_'+rs.id+'">'+TranslateCountToText(rs.translateCount)+'</span></div>'
 											+'<div class="opBtn">'+new Date(rs.addTime).format("MM/dd hh:mm")+'</div>'
 										+'</div>'
-										+'<div style="font-size:13px;">'+sen+'</div>'
-										+'<div onclick=\'AddFrame(this,"'+rs.word+'")\'></div>';
+										+'<div style="font-size:13px;">'+sen+'</div>';
+										//+'<div onclick=\'AddFrame(this,"'+rs.word+'")\'></div>';
 						$("div_words").appendChild(div);	
-						var arr=div.getElementsByTagName("div");
+						/*var arr=div.getElementsByTagName("div");
 						if(arr.length>0){
 							arr[arr.length-1].onclick();
-						}
+						}*/
 					}
 				);
 }
@@ -307,6 +317,17 @@ function UpdateWordCounts()
 		}
 	}
 	)
+}
+
+function UpdateTranslateCounts(id)
+{
+	db.FindWordByID(id,function(rs){
+		var span=$('count_'+rs.id);
+		if(span){
+			span.innerHTML=TranslateCountToText(rs.translateCount);
+		}
+	}
+	);
 }
 </script>
 </head>

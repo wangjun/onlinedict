@@ -59,14 +59,14 @@ DictDB.prototype=
 		this.Exec('UPDATE  dict SET sentence=?,pageUrl=?,addTime=?,translateCount=translateCount+1 WHERE word=?'
 				,[sen,url,(new Date()).getTime(),word]);
 	},
-	IncreaseTranslateCount:function(word){
-		this.Exec('UPDATE  dict SET translateCount=translateCount+1 WHERE word=?'
-				,[word]);
+	IncreaseTranslateCount:function(id){
+		this.Exec('UPDATE  dict SET translateCount=translateCount+1 WHERE id=?'
+				,[id]);
 	},
-	DecreaseTranslateCount:function(word){
+	/*DecreaseTranslateCount:function(word){
 			this.Exec('UPDATE  dict SET translateCount=translateCount-1 WHERE word=?'
 				,[word]);
-	},
+	},*/
 	GetWord:function(word,fun){
 			var w=null;
 			this.Exec('SELECT * FROM dict WHERE word=?'
@@ -88,13 +88,13 @@ DictDB.prototype=
 								}
 			);
 	},
-	DeleteWord:function(word){
-				this.Exec('DELETE FROM dict WHERE word=?',[word]);
+	DeleteWord:function(id){
+				this.Exec('DELETE FROM dict WHERE id=?',[id]);
 				//this.Exec('UPDATE  dict SET translateCount=-1 WHERE word=?',[word]);
 	},
-	SetRemember:function(word){
+	SetRemember:function(id){
 				//this.Exec('DELETE FROM dict WHERE word=?',[word]);
-				this.Exec('UPDATE  dict SET translateCount=0 WHERE word=?',[word]);
+				this.Exec('UPDATE  dict SET translateCount=0 WHERE id=?',[id]);
 	},
 	GetRows:function(pageIndex,pageSize,orderKey,fun){
 		if(!orderKey)
@@ -149,5 +149,26 @@ DictDB.prototype=
 				fun(count);
 			}
 		);
-	}
+	},
+	FindWordByID:function(id,fun){
+			var w=null;
+			this.Exec('SELECT * FROM dict WHERE id=?'
+				,[id]
+				,function(result){
+									if(result.rows.length>0){
+										var row=result.rows.item(0);
+										console.log(row);
+										w = {
+												id: row['id'],
+												word: row['title'],
+												sentence: row['body'],
+												pageUrl:row['pageUrl'],
+												addTime:row['addTime'],
+												translateCount:row['translateCount']
+											};
+									}
+									return fun(w);
+								}
+			);
+	},
 };
