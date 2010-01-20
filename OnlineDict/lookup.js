@@ -46,8 +46,10 @@ function SaveNewWord(w,s,purl,pos)
       //alert(response);
 	  if(response.result)
 	  {
-		last_div.innerHTML = '<font color=red>重复取词： ' + response.result.word + " "+ response.result.translateCount + ' 次</font><br/>' +  response.result.sentence;
+		last_div.innerHTML = '<font color=green><font color=red>' + response.result.word + "</font> 重复查询<font color=red>"+ response.result.translateCount + '</font> 次</font> <span id="tool_indexpage"><a href=#><font color=red>复习\>\></font></a></span></font>';
 		last_div.style.display = 'block';
+        div_toolbar.style.fontSize = "6px;"
+        document.getElementById('tool_indexpage').addEventListener("mouseup",tool_indexpage, false);
 	  }
 	  
     }
@@ -118,6 +120,11 @@ function tool_pin() {
 function tool_disable() {
   //alert(window.location.href);
   g_bDisable = true;
+}
+
+//跳转到主页
+function tool_indexpage() {
+    window.location.href = chrome.extension.getURL("remember.htm");
 }
 
 //检查翻译窗口是否存在，如果存在则关闭它
@@ -233,26 +240,26 @@ function createPopUp(word,senctence, x, y, screenX, screenY) {
   
   var div_toolbar = document.createElement('div');
   //div_toolbar.src = 'http://dict.cn/mini.php?q=' + escape(word);
-  div_toolbar.innerHTML = 
-   "<img id='tool_pin" + div_num + "' src='" + chrome.extension.getURL("pin.png") + "'>"
-   + "<img id='tool_disable" + div_num + "' src='" + chrome.extension.getURL("disable.png") +"'>"
-   + "<img id='tool_close' src='" + chrome.extension.getURL("close.png") +"'>";
+  //div_toolbar.innerHTML = 
+   //"<img id='tool_pin" + div_num + "' src='" + chrome.extension.getURL("pin.png") + "'>"
+   //+ "<img id='tool_disable" + div_num + "' src='" + chrome.extension.getURL("disable.png") +"'>"
+   //+ "<img id='tool_close' src='" + chrome.extension.getURL("close.png") +"'>";
   div_toolbar.style.left = x + 'px';
-  div_toolbar.style.top = y + div_height*3/4 + frame_height + 2 + 'px';
+  div_toolbar.style.top = y + div_height*3/4 + frame_height + 0 + 'px';
   div_toolbar.style.align = 'right';
   div_toolbar.style.position = 'absolute';
   div_toolbar.style.width = frame.style.width;  
-  div_toolbar.style.font_size = "13px;"
+  div_toolbar.style.fontSize = "8px;"
   //div_toolbar.style.height = '20px';
   div_toolbar.style.border = '1px solid #767676';//'1px solid ' + colors[optVal("color_type")][1];
-  div_toolbar.style.backgroundColor = '#767676';//colors[optVal("color_type")][1];//'#3A3';
+  div_toolbar.style.backgroundColor = '#EFF0F6';//colors[optVal("color_type")][1];//'#3A3';
   div_toolbar.style.zIndex = '65535';
   div_toolbar.style.display = 'none';
   body.appendChild(div_toolbar);
   last_div = div_toolbar;
   
-  document.getElementById('tool_pin' + div_num).addEventListener("mouseup",tool_pin, false);
-  document.getElementById('tool_disable' + div_num).addEventListener("mouseup",tool_disable, false);
+  //document.getElementById('tool_pin' + div_num).addEventListener("mouseup",tool_pin, false);
+  //document.getElementById('tool_disable' + div_num).addEventListener("mouseup",tool_disable, false);
   
   div_num++;
   
