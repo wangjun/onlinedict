@@ -1,7 +1,8 @@
 ﻿{"name": "OnlineDict",
- "version": "3.1",
+ "version": "3.2",
  "description": "Click the word in any page, and the translation will show up. ",
- "icons": { "128": "logo.png"},
+ "icons": { "48": "logo_small.png",
+          "128": "logo.png" },
  "options_page": "options.htm",
  "browser_action": {
     "default_icon": "logo_small.png",
