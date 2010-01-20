@@ -77,8 +77,8 @@ DictDB.prototype=
 										console.log(row);
 										w = {
 												id: row['id'],
-												word: row['title'],
-												sentence: row['body'],
+												word: row['word'],
+												sentence: row['sentence'],
 												pageUrl:row['pageUrl'],
 												addTime:row['addTime'],
 												translateCount:row['translateCount']
@@ -160,8 +160,8 @@ DictDB.prototype=
 										console.log(row);
 										w = {
 												id: row['id'],
-												word: row['title'],
-												sentence: row['body'],
+												word: row['word'],
+												sentence: row['sentence'],
 												pageUrl:row['pageUrl'],
 												addTime:row['addTime'],
 												translateCount:row['translateCount']

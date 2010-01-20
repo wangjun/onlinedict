@@ -183,19 +183,6 @@ function ShowTranslateFrame(id){
 			frame.style.width = '95%';
 			frame.style.height = '209px';
 			db.IncreaseTranslateCount(id);
-			/*var span=$('count_'+id);
-			if(span){
-				var c=parseInt(span.innerHTML);
-				if(c)
-				{
-					c = c+1;
-				}
-				else
-				{
-					c = 1;
-				}
-				span.innerHTML=TranslateCountToText(c);
-			}*/
 			UpdateTranslateCounts(id);
 		}else{
 			frame.style.width = '0px';
@@ -205,15 +192,12 @@ function ShowTranslateFrame(id){
 	}
 	else
 	{
+		db.IncreaseTranslateCount(id);
+		UpdateTranslateCounts(id);
 		CreateTranslateFrame(id);
 	}
 	
 	UpdateWordCounts();
-}
-
-function AddFrame(div,word){
-	//div.appendChild(CreateTranslateFrame(word));
-	Debug("addframe");
 }
 
 function ListWordPageList(pageIndex){
