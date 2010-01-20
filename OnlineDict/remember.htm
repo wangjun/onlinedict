@@ -89,7 +89,10 @@ Date.prototype.format = function(format)
 
 function WebTranslate()
 {
-    //$("input_word").style.
+    var elm = $("input_word");
+    var x = elm.pixelLeft;
+    var y = elm.pixelTop;
+    alert("x,y=" + x + "," + y);
     //createPopUp();
 }
 
