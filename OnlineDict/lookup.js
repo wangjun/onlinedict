@@ -198,6 +198,7 @@ function OnDictEvent(e) {
   }
   
   if (word != '') {
+    SaveNewWord(word,window.getSelection().getRangeAt(0).startContainer.nodeValue,window.location.href,0);
     createPopUp(word, window.getSelection().getRangeAt(0).startContainer.nodeValue, e.pageX, e.pageY, e.screenX, e.screenY);
     return;
   }
@@ -233,7 +234,7 @@ function createPopUp(word,senctence, x, y, screenX, screenY) {
   frame.style.font="Georgia, serif";
   frame.style.borderRadius ="4px";// round border,not support IE
   body.appendChild(frame);
-  SaveNewWord(word,senctence,window.location.href,0);
+  //SaveNewWord(word,senctence,window.location.href,0);
   
   last_frame = frame;
   //return;
