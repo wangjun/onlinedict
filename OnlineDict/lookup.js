@@ -214,15 +214,36 @@ function createPopUp(word,senctence, x, y, screenX, screenY) {
   
   var frame_height = 220;
   var frame_width = 280;
-  var div_height = 20;
+  var padding = 10;
+  
+  var frame_left = 0;
+  var frame_top = 0;
   
   frame = document.createElement('iframe');
   //frame.src = 'http://dict.cn/mini.php?q=' + escape(word);
   frame.src = 'http://dict.cn/mini.php?q=' + word;
   frame.id = 'OnlineDict';
   
-  frame.style.left = x + 'px';
-  frame.style.top = y + div_height*3/4 + 'px';
+    
+  var screen_width = screen.availWidth;
+  var screen_height = screen.availHeight;
+  
+  if (screenX + frame_width < screen_width) {
+    frame_left = x;
+  } else {
+    frame_left = (x - frame_width - 2 * padding);
+  }
+  frame.style.left = frame_left + 'px';
+  
+  if (screenY + frame_height + 20 < screen_height) {
+    frame_top = y;
+  } else {
+	frame_top = (y - frame_height - 2 * padding);
+  }
+  frame.style.top = frame_top + 'px';
+  
+  //frame.style.left = x + 'px';
+  //frame.style.top = y + div_height*3/4 + 'px';
   frame.style.position = 'absolute';
   frame.style.width = frame_width + 'px';
   frame.style.height = frame_height + 'px';
@@ -245,8 +266,8 @@ function createPopUp(word,senctence, x, y, screenX, screenY) {
    //"<img id='tool_pin" + div_num + "' src='" + chrome.extension.getURL("pin.png") + "'>"
    //+ "<img id='tool_disable" + div_num + "' src='" + chrome.extension.getURL("disable.png") +"'>"
    //+ "<img id='tool_close' src='" + chrome.extension.getURL("close.png") +"'>";
-  div_toolbar.style.left = x + 'px';
-  div_toolbar.style.top = y + div_height*3/4 + frame_height + 0 + 'px';
+  div_toolbar.style.left = frame_left + 'px';
+  div_toolbar.style.top = frame_top + frame_height + 0 + 'px';
   div_toolbar.style.align = 'right';
   div_toolbar.style.position = 'absolute';
   div_toolbar.style.width = frame.style.width;  
