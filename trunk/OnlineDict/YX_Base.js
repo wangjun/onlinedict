@@ -24,11 +24,11 @@ function CheckReturn(apiname,res,funError)
 var YXBase=Class.create();
 YXBase.prototype=
 {
-	initialize: function() {
+	initialize: function(type) {
 		this.g_ngver = 0;
 		this.g_user_id = 0;
 		this.user_mail = 0;
-		this.g_type = 0;
+		this.g_type = type;
 	},
 	GetUserID:function(funSuccess,funError){
 		$.ajax({
@@ -99,13 +99,13 @@ YXBase.prototype=
 			{
 				return;
 			}        
-			if(res[2][0]==0)
+			if(res[2][0]==0) //gid
 			{
 				funError("参数错误2！");
 				return;
 			}
 			g_ngver = res[2][1];
-			funSuccess();
+			funSuccess(res[2]);
 		  },
 		  error: function(XMLHttpRequest, textStatus, errorThrown){
 			 funError(textStatus);
