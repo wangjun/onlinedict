@@ -53,3 +53,35 @@ h1
 -webkit-border-radius: 8px;
 border-radius: 8px;
 } 
+
+a {
+	font-size: 12px;
+	color: #034B81;
+	text-decoration: none;
+}
+a:hover {
+	text-decoration: none;
+}
+.lineBlock
+{
+	margin-bottom: 3px;
+	padding-bottom:3px;
+}
+.wordTitle
+{
+	background-color: #F4F6FC;
+	padding-bottom:3px;
+	padding-top:3px;
+}
+.keyWord
+{
+	display: inline;
+	font-weight: bold;
+	font-size: 16px;
+}
+.opBtn
+{
+	display: inline;
+	float: right;
+	padding-left: 15px;
+}
