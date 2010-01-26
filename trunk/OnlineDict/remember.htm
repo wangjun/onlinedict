@@ -39,10 +39,12 @@
         }
     </style>
 <script type="text/javascript" src="newwords.js"></script>
+<script type="text/javascript" src="jquery-1.4.js"></script>
+<script type="text/javascript" src="YX_Base.js"></script>
 <script> 
 /* util script start*/
-function $(element) {
-  if (typeof element == 'string')
+function getid(element) {
+  //if (typeof element == 'string')
    return document.getElementById(element);
 }
 function GetGroupValue(groupName){
@@ -57,12 +59,12 @@ function GetGroupValue(groupName){
 }
 /*
 hide=function(element) {
-  $(element).style.display = 'none';
+  getid(element).style.display = 'none';
   return element;
 }
 
 show=function(element) {
-  $(element).style.display = '';
+  getid(element).style.display = '';
   return element;
 }
 */
@@ -89,7 +91,7 @@ Date.prototype.format = function(format)
 
 function WebTranslate()
 {
-    var elm = $("input_word");
+    var elm = getid("input_word");
     var x = elm.pixelLeft;
     var y = elm.pixelTop;
     alert("x,y=" + x + "," + y);
@@ -153,7 +155,7 @@ function GetPageCount(fun){
 
 function SetRemember(id){
 	db.SetRemember(id);
-	/*var span=$('count_'+id);
+	/*var span=getid('count_'+id);
 	if(span){
 		span.innerHTML=TranslateCountToText(0);
 	}*/
@@ -186,7 +188,7 @@ function RemoveWord(id){
 
 function ShowTranslateFrame(id){
 	//Debug(count);
-	var frame=$("frame_"+id);
+	var frame=getid("frame_"+id);
 	if(frame){
 		if(frame.fold){
 			frame.style.width = '95%';
@@ -251,7 +253,7 @@ function ListWordPageList(pageIndex){
 										+'</div>'
 										+'<div style="font-size:13px;">'+sen+'</div>';
 										//+'<div onclick=\'AddFrame(this,"'+rs.word+'")\'></div>';
-						$("div_words").appendChild(div);	
+						getid("div_words").appendChild(div);	
 						/*var arr=div.getElementsByTagName("div");
 						if(arr.length>0){
 							arr[arr.length-1].onclick();
@@ -290,21 +292,21 @@ function ShowNextPage(){
 }
 
 function Debug(str){
-	var s=$("debug").innerHTML;
-	$("debug").innerHTML=s+"<br>"+str;
+	var s=getid("debug").innerHTML;
+	getid("debug").innerHTML=s+"<br>"+str;
 }
 
 function UpdateWordCounts()
 {
 	db.GetNewWordsCount(function(result){
-		var span=$('span_newwords');
+		var span=getid('span_newwords');
 		if(span){
 			span.innerHTML="<font color='red'>" + result + "个</font>新单词";
 		}
 	}
 	)
 	db.GetRememberCount(function(result){
-		var span=$('span_rememberwords');
+		var span=getid('span_rememberwords');
 		if(span){
 			span.innerHTML="已记住<font color='red'>" + result + "个</font>单词";
 		}
@@ -315,7 +317,7 @@ function UpdateWordCounts()
 function UpdateTranslateCounts(id)
 {
 	db.FindWordByID(id,function(rs){
-		var span=$('count_'+rs.id);
+		var span=getid('count_'+rs.id);
 		if(span){
 			span.innerHTML=TranslateCountToText(rs.translateCount);
 		}
@@ -335,8 +337,11 @@ function UpdateTranslateCounts(id)
                 </td>
                 <td align="right">
                     
-                        <a href="./remember.htm" target="_blank">首页</a> | <a href="./options.htm" target="_blank">选项</a> | <a href="http://code.google.com/p/onlinedict/"
-                            target="_blank">OnlineDict主页</a><br/><br/><font color=green><span id='span_newwords'>新单词：0个</span>，<span id='span_rememberwords'>记住了：0个<span></font>
+                        <a href="./remember.htm" target="_blank">首页</a> | 
+						<a href="./options.htm" target="_blank">选项</a> | 
+						<a href="http://code.google.com/p/onlinedict/" target="_blank">OnlineDict主页</a> | 
+						<a href="http://webscissor.appspot.com/Login?redi_url=remember.htm" target="_blank">Google同步</a>
+							<br/><br/><font color=green><span id='span_newwords'>新单词：0个</span>，<span id='span_rememberwords'>记住了：0个<span></font>
                 </td>
             </tr>
             <tr><td><input id="input_word"/><input type="button" value="网络查词" onclick="WebTranslate();" /></td><td></td></tr>

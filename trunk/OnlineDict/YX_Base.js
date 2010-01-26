@@ -5,22 +5,6 @@
     }
   }
 }
-
-function CheckReturn(apiname,res,funError)
-{
-	if(res[0]!=apiname)
-	{
-		funError(apiname + ":系统错误，请与开发人员联系,error=" + res[0]);
-		return true;
-	}
-	if(0!=res[1])
-	{
-		funError(apiname + ":参数错误,error=" + res[1]);
-		return true;
-	}
-	return false
-}
-
 var YXBase=Class.create();
 YXBase.prototype=
 {
@@ -29,10 +13,11 @@ YXBase.prototype=
 		this.g_user_id = 0;
 		this.user_mail = 0;
 		this.g_type = type;
+		this.server = "http://webscissor.appspot.com";
 	},
 	GetUserID:function(funSuccess,funError){
 		$.ajax({
-		  url: '/GetUserID',
+		  url:this.server+'/GetUserID',
 		  type: 'GET',
 		  success: function(data) {
 			var res = JSON.parse(data);
@@ -53,7 +38,7 @@ YXBase.prototype=
 	},
 	UpdateNGVER:function(funSuccess,funError){
 		$.ajax({
-		  url: '/GetNGVER',
+		  url:this.server+'/GetNGVER',
 		  type: 'GET',
 		  data: {user_id:g_user_id,type:g_type},
 		  success: function(data) {
@@ -73,7 +58,7 @@ YXBase.prototype=
 	},
 	GetList:function(gver1,gver2,funSuccess,funError){
 		$.ajax({
-		  url: '/GetList',
+		  url:this.server+'/GetList',
 		  data: {user_id:g_user_id,type:g_type,gver1:gver1,gver2:gver2},
 		  success: function(data) {
 			var res = JSON.parse(data);
@@ -90,7 +75,7 @@ YXBase.prototype=
 	},
 	AddData:function(textAdd,funSuccess,funError){
 		$.ajax({
-		  url: '/AddData',
+		  url:this.server+'/AddData',
 		  type: 'POST',
 		  data: {user_id:g_user_id,type:g_type,ngver:g_ngver,data:textAdd},
 		  success: function(data) {
@@ -116,7 +101,7 @@ YXBase.prototype=
 	DelData:function DelData(gid,funSuccess,funError)
 	{
 		$.ajax({
-		  url: '/DelData',
+		  url:this.server+'/DelData',
 		  type: 'GET',
 		  data: {user_id:g_user_id,type:g_type,ngver:g_ngver,gid:gid},
 		  success: function(data) {
@@ -145,7 +130,7 @@ YXBase.prototype=
 		document.getElementById("DIV_AddData").innerText= "正在更新……";
 		var textAdd = document.getElementById("input_data").value;
 		$.ajax({
-		  url: '/UpdateData',
+		  url:this.server+'/UpdateData',
 		  type: 'POST',
 		  data: {user_id:g_user_id,type:g_type,ngver:g_ngver,gid:gid,data:textAdd},
 		  success: function(data) {
@@ -172,7 +157,7 @@ YXBase.prototype=
 	GetData:function (gid,funSuccess,funError)
 	{
 		$.ajax({
-		  url: '/GetData',
+		  url:this.server+'/GetData',
 		  type: 'GET',
 		  data: {user_id:g_user_id,type:g_type,gid:gid},
 		  success: function(data) {
@@ -195,5 +180,19 @@ YXBase.prototype=
 		  }
 		});
 	}
-
 };
+
+function CheckReturn(apiname,res,funError)
+{
+	if(res[0]!=apiname)
+	{
+		funError(apiname + ":系统错误，请与开发人员联系,error=" + res[0]);
+		return true;
+	}
+	if(0!=res[1])
+	{
+		funError(apiname + ":参数错误,error=" + res[1]);
+		return true;
+	}
+	return false
+}
