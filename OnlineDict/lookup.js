@@ -46,10 +46,10 @@ function SaveNewWord(w,s,purl,pos)
       //alert(response);
 	  if(response.result)
 	  {
-		last_div.innerHTML = '<font color=green><font color=red>' + response.result.word + "</font> 重复查询<font color=red>"+ response.result.translateCount + '</font> 次</font> <span id="tool_indexpage"><a href=#><font color=red>复习\>\></font></a></span></font>';
+		/*last_div.innerHTML = '<font color=green><font color=red>' + response.result.word + "</font> 重复查询<font color=red>"+ response.result.translateCount + '</font> 次</font> <span id="tool_indexpage"><a href=#><font color=red>复习\>\></font></a></span></font>';
 		last_div.style.display = 'block';
         div_toolbar.style.fontSize = "6px;"
-        document.getElementById('tool_indexpage').addEventListener("mouseup",tool_indexpage, false);
+        document.getElementById('tool_indexpage').addEventListener("mouseup",tool_indexpage, false);*/
 	  }
 	  
     }

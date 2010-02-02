@@ -44,14 +44,43 @@ Date.prototype.format = function(format)
    return format;  
 } 
 /* util script end*/
-
+var last_web_translate_frame = null;
 function WebTranslate()
 {
-    var elm = getid("input_word");
-    var x = elm.pixelLeft;
-    var y = elm.pixelTop;
-    alert("x,y=" + x + "," + y);
-    //createPopUp();
+    if (last_web_translate_frame != null) {
+        var div=document.getElementById("div_webTranslate");
+        div.removeChild(last_web_translate_frame);
+        last_web_translate_frame = null;
+        return;
+    }
+    var strWord = getid("input_word").value;
+    if(strWord.length<=2)
+    {
+        alert("");
+        return;
+    }
+    var frame_height = 280;
+    var frame_width = 200;
+    var div_height = 20;
+
+    var frame = document.createElement('iframe');
+    frame.src = 'http://dict.cn/mini.php?q=' + strWord;
+    frame.fold=false;
+
+    frame.style.left = '10px';
+    frame.style.top = '10px';
+    frame.style.width = '500px';
+    frame.style.height = '309px';
+    //frame.style.border = 'solid 1px #ccc';
+    frame.style.border = '1px solid #767676';
+    //frame.style.backgroundColor = colors[optVal("color_type")][0];//'#DCF6DB';
+    frame.style.backgroundColor = '#EFF0F6';
+    frame.style.font="Georgia, serif";
+    frame.style.borderRadius ="4px";// round border,not support IE
+    var div=document.getElementById("div_webTranslate");
+    div.appendChild(frame);
+    
+    last_web_translate_frame = frame;
 }
 
 var currentpage = 0;

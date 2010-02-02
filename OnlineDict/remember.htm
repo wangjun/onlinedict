@@ -8,23 +8,12 @@
 <script type="text/javascript" src="newwords.js"></script>
 <script type="text/javascript" src="jquery-1.4.js"></script>
 <script type="text/javascript" src="remember.js"></script>
-<script type="text/javascript" src="http://localhost:8080/static/YX_Base.js"></script>
 <script> 
 
 $(document).ready(function(){
 	db.init();
 	ShowPage(currentpage);
 	UpdateWordCounts();
-	
-	var yxBase = new YXBase("http://localhost:8080",0);
-	yxBase.GetUserID(
-		function (){
-			getid("span_username").innerHTML = yxBase.user_mail;
-		},
-		function (strErr){
-			alert(strErr);
-		}
-	);
  });
 </script>
 </head>
@@ -46,8 +35,12 @@ $(document).ready(function(){
 							<br/><br/><font color=green><span id='span_newwords'>新单词：0个</span>，<span id='span_rememberwords'>记住了：0个<span></font>
                 </td>
             </tr>
-            <tr><td><input id="input_word"/><input type="button" value="网络查词" onclick="WebTranslate();" /></td><td></td></tr>
-        </table>
+            <tr><td>
+<input id="input_word"/>
+<input type="button" value="网络查词" onclick="WebTranslate();" />
+</td><td></td></tr>
+</table>
+<div id="div_webTranslate"></div>
         <table cellpadding="5" class="settings-table">
             <tr>
                 <td valign="top" width="75%">
