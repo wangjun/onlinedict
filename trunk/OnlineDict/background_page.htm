@@ -5,7 +5,6 @@
 <script type="text/javascript">
 var db=new DictDB();
 db.init();
-//db.NewWord('test1','this is sentence','http://sdfsdf',(new Date()).getTime(),1);
 SaveNewWord=function(word,sentence,wordurl){
 db.GetWord(word,function(result){
 					if(result){
@@ -19,10 +18,7 @@ db.GetWord(word,function(result){
 
 var DefaultOptions =
 {
-    //"background_color": ["color", "#DCF6DB"],
-    //"links_color": ["color", "#3A3"],
     "color_type":["color_type",0],
-    //"text_color": ["color", ""],
     "dict_disable": ["checked", false],
     "ctrl_only": ["checked", false],
     "english_only": ["checked", true]
@@ -48,7 +44,6 @@ ColorsChanged = true;
 chrome.extension.onRequest.addListener(
     function(request, sender, sendResponse)
     {
-        //ActiveOptions = JSON.parse(localStorage["ColorOptions"]);
         if (request.init == "init" && ColorsChanged == true)
         {
             sendResponse(
@@ -61,19 +56,7 @@ chrome.extension.onRequest.addListener(
         }
         else if(request.init == "new")
         {
-          //alert(request.word);
-          //AddWord(request.word,request.sentence,request.wordurl,request.wordpos);
-		  console.log("requst.new");
-		  /*SaveNewWord(request.word,request.sentence,request.wordurl)
-          sendResponse(
-                {
-                    init: "globalPages",
-                    saved: "ok"
-                }
-            );
-			*/
 		  db.GetWord(request.word,function(res){
-		  //if(res) alert(res.sentence);
 					sendResponse({
 						init: "globalPages",
 						saved: "ok",
@@ -90,14 +73,6 @@ chrome.extension.onRequest.addListener(
         }
     }
 );
-
-/**
-
- function reloadme() { chrome.send('reload', ['jcdgncnemfmkbnnjikmghninhihflkhj']); }
- window.setInterval('reloadme()', 1000);
-
- */
-
 </script>
 </head>
 <body>

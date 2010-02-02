@@ -9,11 +9,31 @@
 <script type="text/javascript" src="jquery-1.4.js"></script>
 <script type="text/javascript" src="remember.js"></script>
 <script> 
-
+ var script = function() { 
+    alert("aaa");
+} 
 $(document).ready(function(){
 	db.init();
 	ShowPage(currentpage);
 	UpdateWordCounts();
+    
+    /*chrome.windows.getLastFocused(function(aWindow)
+    {
+      chrome.tabs.getSelected(aWindow.id, function(aTab)
+        {
+          if (aTab)
+          {
+            //alert(aTab.title );
+            getid("div_webTranslate").innerHTML = aTab.title;
+            
+          }
+          chrome.tabs.getSelected(null,function(tab) { 
+                            chrome.tabs.executeScript(tab,{code:script,allFrames:true}) 
+                        }); 
+          //chrome.tabs.executeScript(aWindow.id,{code:script});
+        });
+    });
+    */
  });
 </script>
 </head>
@@ -30,8 +50,7 @@ $(document).ready(function(){
                     
                         <a href="./remember.htm" target="_blank">首页</a> | 
 						<a href="./options.htm" target="_blank">选项</a> | 
-						<a href="http://code.google.com/p/onlinedict/" target="_blank">OnlineDict主页</a> | 
-						<span id="span_username"><a href="http://localhost:8080/Login?redi_url=remember.htm" target="_blank">Google同步</a></span>
+						<a href="http://code.google.com/p/onlinedict/" target="_blank">OnlineDict主页</a> 
 							<br/><br/><font color=green><span id='span_newwords'>新单词：0个</span>，<span id='span_rememberwords'>记住了：0个<span></font>
                 </td>
             </tr>
