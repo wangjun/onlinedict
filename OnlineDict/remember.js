@@ -223,8 +223,8 @@ function ListWordPageList(pageIndex){
 						div.innerHTML='<div class="wordTitle">'
 											+'<div class="keyWord">'+rs.word+'</div>'
 											+sourceDiv
-											+'<div class="opBtn"><a title="记住了" onclick=\'SetRemember("'+rs.id+'")\' href="#"><image src="tick.png"></a></div>'
 											+'<div class="opBtn"><a title="删除" onclick=\'RemoveWord("'+rs.id+ '")\' href="#"><image src="del.png"></a></div>'
+											+'<div class="opBtn"><a title="记住了" onclick=\'SetRemember("'+rs.id+'")\' href="#"><image src="tick.png"></a></div>'
 											+'<div class="opBtn"><a title="查询" onclick=\'ShowTranslateFrame("'+rs.id+'")\' href="#"><image src="search.png"></a></div>'
 											+'<div class="opBtn"><span id="count_'+rs.id+'">'+TranslateCountToText(rs.translateCount)+'</span></div>'
 											+'<div class="opBtn">'+new Date(rs.addTime).format("MM/dd hh:mm")+'</div>'
