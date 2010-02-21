@@ -15671,7 +15671,7 @@ take one's place
 take one's temperature
 take one's time
 take one's turn
-take one5s seat
+take one's seat
 take oneself off
 take order to do
 take order with
@@ -17411,7 +17411,6 @@ worthy
 would
 would rather do
 would rather...than
-would rather鈥han鈥?/a>
 wound
 wounded
 woven
