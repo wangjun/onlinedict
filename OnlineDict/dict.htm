@@ -51,7 +51,7 @@ function getid(element) {
 }
 
 function ToJSON(){
-    db.GetVocabulary(function(res){
+    db.GetVocabulary(getid('input_like').value,function(res){
         var elm = getid('div_words');
         
 		//var strJSON = JSON.stringify(res);
@@ -93,7 +93,9 @@ function ReadJSON(){
         <table cellpadding="5" class="settings-table">
             <tr>
                 <td valign="top" width="55%">
-					词汇表导入：每行一个单词<input type="button" onclick="ReadJSON()" value="导入"/><input type="button" onclick="ToJSON()" value="导出json"/>
+					词汇表导入：每行一个单词<br/>
+                    <input type="button" onclick="ReadJSON()" value="导入"/><br/>
+                    <input type="button" onclick="ToJSON()" value="导出json"/><input id="input_like" value="a%"/>
 					<textarea class="text" name="comment" rows="30" id="div_words"></textarea> 
                 </td>
                 <td valign="top">
