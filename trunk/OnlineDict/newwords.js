@@ -111,9 +111,9 @@ DictDB.prototype=
         this.Exec('INSERT OR IGNORE INTO T_vocabulary(word, info,addTime) VALUES (?,?,?)'
             ,[word, info, (new Date()).getTime()]);
 	},
-	GetVocabulary:function(fun){
-        this.Exec('SELECT * FROM T_vocabulary order by word'
-            ,[]
+	GetVocabulary:function(sql_like,fun){
+        this.Exec('SELECT * FROM T_vocabulary WHERE word like ? order by word'
+            ,[sql_like]
             ,function(result){
                 var res = [];
                 for(var i=0;i<result.rows.length;i++){
