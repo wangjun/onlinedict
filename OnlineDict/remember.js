@@ -86,6 +86,7 @@ function WebTranslate()
 var currentpage = 0;
 var PAGE_SIZE=7;
 var db=new DictDB();
+db.init();
 function CreateTranslateFrame(id) {
   var frame_height = 280;
   var frame_width = 200;
