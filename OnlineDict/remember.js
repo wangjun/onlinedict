@@ -49,9 +49,13 @@ function WebTranslate()
 {
     if (last_web_translate_frame != null) {
         var div=document.getElementById("div_webTranslate");
+        var strWord = getid("input_word").value;
         div.removeChild(last_web_translate_frame);
         last_web_translate_frame = null;
-        return;
+        if(strWord==div.translate_word)
+        {
+            return;
+        }
     }
     var strWord = getid("input_word").value;
     if(strWord.length<=0)
@@ -78,6 +82,7 @@ function WebTranslate()
     frame.style.borderRadius ="4px";// round border,not support IE
     var div=document.getElementById("div_webTranslate");
     div.appendChild(frame);
+    div.translate_word=strWord;
     
     last_web_translate_frame = frame;
 }

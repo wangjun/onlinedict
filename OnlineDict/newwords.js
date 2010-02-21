@@ -32,12 +32,12 @@ DictDB.prototype=
 									  +'[translateCount] INT DEFAULT 1)',
 									[]
   					,function(transaction, result) {
-  						console.log(result);
+  						console.log("创建表成功:dict");
   					}
   					,function(transaction, error) {
   						console.log(error);
   					});
-					query.executeSql('CREATE INDEX index_dict_word ON [dict]([word])',[]
+					query.executeSql('CREATE UNIQUE INDEX IF NOT EXISTS index_dict_word ON [dict]([word])',[]
   					,function(transaction, result) {
   						console.log(result);
   					}
@@ -53,7 +53,7 @@ DictDB.prototype=
 									  +'[addTime] DATETIME)',
 									[]
   					,function(transaction, result) {
-  						console.log(result);
+  						console.log("创建表成功: T_vocabulary");
   					}
   					,function(transaction, error) {
   						console.log(error);
