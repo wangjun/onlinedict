@@ -54,9 +54,8 @@ function WebTranslate()
         return;
     }
     var strWord = getid("input_word").value;
-    if(strWord.length<=2)
+    if(strWord.length<=0)
     {
-        alert("");
         return;
     }
     var frame_height = 280;
