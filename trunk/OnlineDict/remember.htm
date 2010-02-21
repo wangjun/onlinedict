@@ -25,19 +25,35 @@ function LoadLocalPage(localFile,funSuccess,funError)
       }
     });
 }
+function ImportData(txtData){
+    var lines = txtData.split("\n");
+    var words = [];
+    for(var i=0;i<lines.length;i++)
+    {
+        lines[i] = lines[i].replace(/^\s+|\s+$/g,"");
+        if(lines[i].length>0)
+        {
+            words.push(lines[i]);
+        }
+    }
+    db.ImportVocabulary(words);
+    return words;
+}
 function checkUpdateVocabulary()
 {
-    LoadLocalPage('/vocabulary.txt',function (data){
-        yxBase2.UpdateData(
-            10001,data,function (res){
-                alert("更新成功，版本号为" + res[1]);
-                }
-            )
-        },
-        function (error){
-            UploadFirst();
+    db.GetVocabularyCount(function(count){
+        if(count>0)
+        {
+            getid("span_info").innerHTML = "";
+            //已经有数据，不用导入了
+            return;
         }
-    );
+        getid("span_info").innerHTML = "正在导入词汇表……";
+        LoadLocalPage('/vocabulary.txt',function (data){
+            var words = ImportData(data);
+            getid("span_info").innerHTML = words.length + "个词汇已导入";
+        });
+    });
 }
 
 function getSuguest(str,cont){ 
@@ -56,6 +72,7 @@ function onSuguestFinished(obj){
 $(document).ready(function(){
 	ShowPage(currentpage);
 	UpdateWordCounts();
+    checkUpdateVocabulary();
     
     $('#input_word').autocomplete({minchars:2,height:500,callback:onSuguestFinished,ajax_get:getSuguest});
  });
@@ -75,7 +92,7 @@ $(document).ready(function(){
                         <a href="./remember.htm" target="_blank">首页</a> | 
 						<a href="./options.htm" target="_blank">选项</a> | 
 						<a href="http://code.google.com/p/onlinedict/" target="_blank">OnlineDict主页</a> 
-							<br/><br/><font color=green><span id='span_newwords'>新单词：0个</span>，<span id='span_rememberwords'>记住了：0个<span></font>
+							<br/><br/><font color=green><span id='span_newwords'>新单词：0个</span>，<span id='span_rememberwords'>记住了：0个</span><br/><span id='span_info'>导入词汇表……</span></font>
                 </td>
             </tr>
             <tr><td>
