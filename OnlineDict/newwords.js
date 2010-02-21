@@ -129,6 +129,16 @@ DictDB.prototype=
             }
         );
 	},
+	GetVocabularyCount:function(fun){
+		this.Exec('SELECT COUNT(1) as num FROM T_vocabulary'
+			,[]
+			,function(result){
+				console.log(result.rows.length);
+				var count=result.rows.item(0)['num'];
+				fun(count);
+			}
+		);
+	},
 	ImportVocabulary:function(words){
         var theWords = words;
         var timeNow = (new Date()).getTime();
