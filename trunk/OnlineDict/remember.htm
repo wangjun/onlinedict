@@ -69,12 +69,21 @@ function getSuguest(str,cont){
 function onSuguestFinished(obj){ 
   WebTranslate();
 }
+//设置默认按钮
+function   SubmitKeyClick(button)     
+{       
+    if   (event.keyCode   ==   13)     
+    {   
+        document.getElementById(button).focus();           
+        document.getElementById(button).click();   
+    }   
+}   
 $(document).ready(function(){
 	ShowPage(currentpage);
 	UpdateWordCounts();
     checkUpdateVocabulary();
     
-    $('#input_word').autocomplete({minchars:2,height:500,callback:onSuguestFinished,ajax_get:getSuguest});
+    $('#input_word').autocomplete({minchars:2,height:500,delay:0,callback:onSuguestFinished,ajax_get:getSuguest});
  });
 </script>
 </head>
@@ -96,8 +105,8 @@ $(document).ready(function(){
                 </td>
             </tr>
             <tr><td>
-<input id="input_word"/>
-<input type="button" value="网络查词" onclick="WebTranslate();" />
+<input id="input_word" onkeydown="SubmitKeyClick('btn_websearch')"/>
+<input type="button" value="网络查词" onclick="WebTranslate();" id="btn_websearch"/>
 </td><td></td></tr>
 </table>
 <div id="div_webTranslate"></div>
