@@ -1,0 +1,35 @@
+﻿取得用户授权
+第一步:取得用户授权信息
+url: oauth.php?app=begin
+返回值:{'request_token','url'}
+注释:
+客户端存储request_token
+URL.转到URL并请用户验证
+第二部:取得访问权限
+url:oauth.php?app=access
+参数:上一步得到的 request_token , request_token_secret
+返回值:{'access_token','access_token_secret'}
+注释:客户端存储这两个值.便可以在访问受限的资源
+
+以下功能都需要在POST_FORM里面传递以下参数:
+access_token,access_token_secret
+若两个参数无法得到用户信息,则返回错误信息:WrongAuth,这时客户端要重新进行上一步的验证
+功能.单词类
+增加/修改 生词
+url: api.php?app=addword
+参数:word(单词) 可选参数:是否生词(isnew=1) , ( 单词所在的句子 以及URL 将在以后版本中提供 )
+方法:POST
+返回值:若成功,{'wordid'}
+查询一个单词信息
+url: api.php?app=getwords
+参数:word
+方法:POST
+返回:存在=>{add_time,isnew,remember_time}
+ 不存在(无记录){"Empty"}
+查询生词.
+
+
+用户类
+返回当前用户信息
+url:api.php?app=user&action=info
+返回:{总共记住单词,用户类型,用户id...}
