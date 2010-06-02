@@ -1,0 +1,242 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"> 
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF8">
+<title>IFrame</title>
+<!-- load jquery library-->
+<script src="jquery-1.4.js"></script>
+
+<!-- load jquery debug library 
+<script src="jquery.dump.js"></script>
+-->
+<script>
+<!--
+//These data must be moved after release.
+var query;
+
+/*@todo has problem 
+chrome.extension.onRequest.addListener(function(request, sender){
+	console.log("receive now.");
+	alert (request.query);
+	query = request.query;
+});
+*/
+
+query =	window.location.search.substring(1);
+
+while(!query){
+query = "error";//do nothing but just wait
+}
+
+//alert(query);
+
+var sl = "en";
+var tl = "zh";
+-->
+</script>
+
+<script>
+var src=
+"http://www.google.com/dictionary/json?q="+query+"&sl="+sl+"&tl="+tl+"&restrict=pr,de&client=te";
+
+jQuery.getJSON(src+"&callback=?",　function(data)　{　
+　　	
+	//alert("query:　"　+　data.query);
+	//document.write( $.dump(data) );
+	changeDictionaryTitle("key",data.query);
+	
+	var primary = data.primaries[0];
+	
+	
+	
+	 if( primary.type == "headword" ){
+		for ( var term in primary.terms ){
+			var value = primary.terms[term];
+			
+			if(value.type == "phonetic"){
+				if ( value.labels[0].text == "KK" ) break; //api里有两个音标
+				changeDictionaryTitle("pron",value.text);
+			} else if(value.type == "sound"){
+				changeDictionaryTitle("audio",value.text);
+			}
+		}
+	}
+	
+	
+	for (var i in primary.entries){
+		//document.write( $.dump(entry) );
+		entry = primary.entries[i];
+
+		if(entry.labels[0].title=="Part-of-Speech"){
+			var en  = ListDefine(entry.entries , "en" );
+			var zh  = ListDefine(entry.entries , "zh-Hans"   );
+		for( i in en )
+			document.getElementById("meaning").innerHTML += zh[i] + " " +en[i] +"<br />";
+			
+		}
+		//var partofspeech = entry.labels[0].text;
+	}
+	
+});
+/**
+ * @param array defines a part of the json.
+ * @param string language "en" for English "zh-Hans" for Chinese
+ * return array of defines.
+ */
+
+
+function ListDefine( defines , language ){
+	//alert("listdefining");
+	var result = new Array();
+	
+	for ( var i in defines ){
+		item = defines[i];
+		if(item.type == "meaning"){
+			for (var i in item.terms){
+				define = item.terms[i];
+				if( define.language == language ){
+					result.push( define.text );
+				}
+			}
+		}
+	}
+	//document.write( $.dump(en_defines) );
+	return result;
+}
+/*
+ * List Examples of a word.
+ * @param defines
+ * @param flag
+ * @TODO finish the function
+ *
+ */
+
+function listExamples( defines , flag ){
+	
+	
+}
+/*
+ * List Web Define of a word.
+ * @TODO:finish the function
+ *
+ */
+
+
+function webDefine(){
+	
+	return "This is web define.";
+}
+
+
+
+/**
+ * Change the html body by it's id. 
+ *
+ */
+function changeDictionaryTitle( key , value ){
+	if(!value){return;}
+	if(key=="audio"){
+				document.getElementById("sound").appendChild ( 
+				createAudioObject( value )
+			);
+	} else if (key=="pron"){
+		document.getElementById("sound").appendChild ( 
+		createPronLabel( value )
+	);} else {
+		document.getElementById(key).innerHTML = value;
+	}
+}
+
+function createPronLabel( label ){
+	var span = document.createElement("span");
+	span.class = "pron";
+	span.innerHTML = label;
+	return span ;
+}
+
+/**
+ * @patam string url : 
+ * @return Object Element.
+ * @todo if no flash player add image and link to it.
+ * 
+ * 
+ */
+
+function createAudioObject( url ){
+	var span = document.createElement("span");
+	var html = "<object data='http://www.google.com/dictionary/flash/SpeakerApp16.swf' type='application/x-shockwave-flash' width='16' height='16' id='pronunciation'>";
+	html+="<param name='movie'value='http://www.google.com/dictionary/flash/SpeakerApp16.swf'><param id='audioParam' name='flashvars' value='";
+		html+=
+"sound_name="+encodeURIComponent(url)+"'></param>";
+html+="<param name='wmode' value='transparent'></param><a href='"+url+"'>";
+
+html+="<img border='0' width='16' height='16' src='http://www.google.com/dictionary/flash/SpeakerOffA16.png' alt='listen'></a></object>";
+	span.innerHTML = html; 
+	return span;
+}
+</script>
+</head>
+<body>
+<div id="main" style="width:220px;">
+	<div id="tool" style="float:right;clear:both;margin-top:0px">
+		<label>Remeber It</label>
+		<img src="http://www.google.com/dictionary/image/unstarred.gif">
+	</div>
+	<br />
+	<div id="title" style="float:left;maigin-top:10px;clear:both;">
+	<span id="key" style="font-family: Arial, 
+				sans-serif;
+				font-size: 1.33em;
+				font-weight: bold;
+				line-height: 1em;">Finding......</span>
+	<span style="">  </span>
+
+<div id="sound">
+	
+<!--	
+	<span id="pron" style="font-size: 0.9em;
+				font-weight: normal;
+				font-family: "Doulos SIL","Gentium","TITUS Cyberbit Basic","Junicode","Aborigonal Serif","Arial Unicode MS","Lucida Sans Unicode","Chrysanthi Unicode","DejaVu Sans",Sans-serif;
+				white-space: nowrap;
+				line-height: 1em;
+				"></span>
+	<span id="audio" style="margin-top: 1px;
+				position: relative;
+				top: 2px;
+				margin: 0px;
+				padding: 0px;
+				font-family: Arial, sans-serif;
+				font-size: 1.33em;
+				font-weight: bold;
+				line-height: 1em;
+				">
+
+<object data="http://www.google.com/dictionary/flash/SpeakerApp16.swf" type="application/x-shockwave-flash" width=" 16" height="16" id="pronunciation"> 
+
+	<param name="movie" value="http://www.google.com/dictionary/flash/SpeakerApp16.swf"> 
+
+	<param id="audioParam" name="flashvars" value="sound_name=http%3A%2F%2Fwww.gstatic.com%2Fdictionary%2Fstatic%2Fsounds%2Fxy%2F0%2F18%2F18622.mp3" ></param>
+
+	<param name="wmode" value="transparent"> </param>
+
+	<a href="http://www.gstatic.com/dictionary/static/sounds/xy/0/18/18622.mp3"><img border="0" width="16" height="16" src="http://www.google.com/dictionary/flash/SpeakerOffA16.png" alt="listen"></a> 
+
+	</object>
+	</span>
+-->
+	
+	</div><!-- end of sound div-->
+	
+	</div><!-- end of title div-->
+	<br />
+	<div id="meaning" style="margin-top:15px;">
+	</div>
+
+
+</div><!-- end of main div-->
+<script>
+//createAudioObject($audio);
+</script>
+
+</body>
+</html>
