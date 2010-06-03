@@ -1,12 +1,15 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd"> 
-<html xmlns="http://www.w3.org/1999/xhtml"> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF8">
 <title>IFrame</title>
+<!-- load style sheet-->
+
+<link rel="stylesheet" type="text/css" href="googledictionary.css" media="all" >
 <!-- load jquery library-->
 <script src="jquery-1.4.js"></script>
 
-<!-- load jquery debug library 
+<!-- debug.js
 <script src="jquery.dump.js"></script>
 -->
 <script>
@@ -34,7 +37,6 @@ var sl = "en";
 var tl = "zh";
 -->
 </script>
-
 <script>
 var src=
 "http://www.google.com/dictionary/json?q="+query+"&sl="+sl+"&tl="+tl+"&restrict=pr,de&client=te";
@@ -44,10 +46,24 @@ jQuery.getJSON(src+"&callback=?",　function(data)　{　
 	//alert("query:　"　+　data.query);
 	//document.write( $.dump(data) );
 	changeDictionaryTitle("key",data.query);
-	
-	var primary = data.primaries[0];
-	
-	
+	if(data.primaries){
+		var primary = data.primaries[0];
+		primaryDefines(primary);
+	} else if(data.webDefinitions){
+		alert("web");
+		webDefine(data.webDefinitions[0]);
+	} else {
+		document.getElementById("meaning").innerHTML="online-dict 不能找到单词释义.";
+		//没有任何释义...
+	}
+
+});
+/*
+ *
+ *
+ */
+
+function primaryDefines(primary){
 	
 	 if( primary.type == "headword" ){
 		for ( var term in primary.terms ){
@@ -62,22 +78,65 @@ jQuery.getJSON(src+"&callback=?",　function(data)　{　
 		}
 	}
 	
+	if(!primary.entries) return;
 	
 	for (var i in primary.entries){
 		//document.write( $.dump(entry) );
 		entry = primary.entries[i];
-
-		if(entry.labels[0].title=="Part-of-Speech"){
-			var en  = ListDefine(entry.entries , "en" );
-			var zh  = ListDefine(entry.entries , "zh-Hans"   );
-		for( i in en )
-			document.getElementById("meaning").innerHTML += zh[i] + " " +en[i] +"<br />";
-			
+		var en ;
+		var zh ;
+		var partOfSpeech;//词性
+		if(entry.type=="container"){
+			if(entry.labels[0].title=="Part-of-Speech"){//有多个词性
+				partOfSpeech = entry.labels[0].text;
+				en  = ListDefine( entry.entries , "en" );
+				zh  = ListDefine( entry.entries , "zh-Hans" );
+			}
+		} else if (entry.type=="meaning"){
+				if(entry.labels) 
+					partOfSpeech = entry.terms[1].labels[0].text;
+				else
+					partOfSpeech = "webDefinitions";
+				
+				en = ListDefine(entry,"en");
+				zh = ListDefine(entry,"zh");
+			}
+			var define = document.createElement("div");
+			define.class = "define";
+			var span = document.createElement("span");
+				span.innerHTML=partOfSpeech;
+			define.appendChild(span);
+			var meanings = document.createElement("div");
+		for( i in en ){
+			var html;
+			html="<li>";
+			if (zh[i]){
+				html+=zh[i];
+			}
+			if(en[i]){
+				html+="<em>" +en[i] +"</em>";
+			}
+				alert(html);
+				meanings.innerHTML += html;
+			}
 		}
+			define.appendChild(meanings);
 		//var partofspeech = entry.labels[0].text;
-	}
-	
-});
+			document.getElementById("meaning").appendChild(define);
+}
+
+
+/*
+ * List Web Define of a word.
+ * @TODO:finish the function
+ *
+ */
+
+
+function webDefine(headword){
+	return primaryDefines(headword);
+}
+
 /**
  * @param array defines a part of the json.
  * @param string language "en" for English "zh-Hans" for Chinese
@@ -86,20 +145,26 @@ jQuery.getJSON(src+"&callback=?",　function(data)　{　
 
 
 function ListDefine( defines , language ){
+	//document.write( $.dump(defines) );
+	
 	//alert("listdefining");
 	var result = new Array();
 	
-	for ( var i in defines ){
-		item = defines[i];
-		if(item.type == "meaning"){
-			for (var i in item.terms){
-				define = item.terms[i];
-				if( define.language == language ){
-					result.push( define.text );
+	if(defines.type == "meaning"){
+		defines[0] = defines;
+	}
+		for ( var i in defines ){
+			item = defines[i];
+			if(item.type == "meaning"){
+				for (var i in item.terms){
+					define = item.terms[i];
+					if( define.language == language ){
+						result.push( define.text );
+					}
 				}
 			}
 		}
-	}
+	
 	//document.write( $.dump(en_defines) );
 	return result;
 }
@@ -115,17 +180,7 @@ function listExamples( defines , flag ){
 	
 	
 }
-/*
- * List Web Define of a word.
- * @TODO:finish the function
- *
- */
 
-
-function webDefine(){
-	
-	return "This is web define.";
-}
 
 
 
@@ -141,8 +196,8 @@ function changeDictionaryTitle( key , value ){
 			);
 	} else if (key=="pron"){
 		document.getElementById("sound").appendChild ( 
-		createPronLabel( value )
-	);} else {
+		createPronLabel( value ));
+	} else {
 		document.getElementById(key).innerHTML = value;
 	}
 }
@@ -177,23 +232,19 @@ html+="<img border='0' width='16' height='16' src='http://www.google.com/diction
 </script>
 </head>
 <body>
-<div id="main" style="width:220px;">
-	<div id="tool" style="float:right;clear:both;margin-top:0px">
-		<label>Remeber It</label>
-		<img src="http://www.google.com/dictionary/image/unstarred.gif">
-	</div>
-	<br />
-	<div id="title" style="float:left;maigin-top:10px;clear:both;">
-	<span id="key" style="font-family: Arial, 
+<div id="main">
+  <div id="tool" style="float:right;clear:both;margin-top:0px; display:none;">
+	<label>Remeber It</label>
+    <img src="http://www.google.com/dictionary/image/unstarred.gif"> </div>
+  <br />
+  <div id="title" style="float:left;maigin-top:10px;clear:both;"> <span id="key" style="font-family: Arial, 
 				sans-serif;
 				font-size: 1.33em;
 				font-weight: bold;
-				line-height: 1em;">Finding......</span>
-	<span style="">  </span>
-
-<div id="sound">
-	
-<!--	
+				line-height: 1em;">Finding......</span> <span style=""> </span>
+    <div id="sound"> 
+      
+      <!--	
 	<span id="pron" style="font-size: 0.9em;
 				font-weight: normal;
 				font-family: "Doulos SIL","Gentium","TITUS Cyberbit Basic","Junicode","Aborigonal Serif","Arial Unicode MS","Lucida Sans Unicode","Chrysanthi Unicode","DejaVu Sans",Sans-serif;
@@ -223,20 +274,19 @@ html+="<img border='0' width='16' height='16' src='http://www.google.com/diction
 
 	</object>
 	</span>
--->
-	
-	</div><!-- end of sound div-->
-	
-	</div><!-- end of title div-->
-	<br />
-	<div id="meaning" style="margin-top:15px;">
-	</div>
-
-
-</div><!-- end of main div-->
+--> 
+      
+    </div>
+    <!-- end of sound div--> 
+    
+  </div>
+  <!-- end of title div--> 
+  <br />
+  <div id="meaning" style="margin-top:15px;"></div>
+</div>
+<!-- end of main div--> 
 <script>
 //createAudioObject($audio);
 </script>
-
 </body>
 </html>

@@ -6,7 +6,8 @@
     "color_type":["color_type",0],
     "dict_disable": ["checked", false],
     "ctrl_only": ["checked", false],
-    "english_only": ["checked", true]
+    "english_only": ["checked", true],
+		"dictionary_service":["selectedIndex",0]
 };
 
 function getColorType()
@@ -39,6 +40,9 @@ function save_options()
         case "color_type":
             Options[key][1] = getColorType();
             break;
+				case "selectedIndex":
+						Options[key][1] = document.getElementById(key).selectedIndex;
+						break;
         }
 
     }
@@ -67,6 +71,9 @@ function restore_options()
                 if (localOptions[key][1]) element.checked = true;
                 else element.checked = false;
                 break;
+						case "selectIndex":
+								if(localOptions[key][1]) element.selectIndex = localOptions[key][1];
+								else element.selectIndex = 0;
             }
         }
     }

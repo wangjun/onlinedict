@@ -12,6 +12,7 @@ var colors=[["#DCF6DB","#3A3"],
     ["#F2F2F2","#808080"],
     ["#E9ACF2","#F57A3D"]
 ];
+var query ;
 
 chrome.extension.sendRequest(
     {
@@ -82,9 +83,21 @@ function getWordIndex(word) {
   return -100;
 }
 
+/*
+ * yaofur update:用正则表达式判定
+ */
+
 function isEnglish(s)
-{  
-    for(var i=0;i<s.length;i++)
+{	
+	var patrn=/^[A-Za-z]+$/;
+	if (!patrn.exec(s)) {
+			return false;
+		}else{
+			return true;
+		}
+	
+    /*
+	for(var i=0;i<s.length;i++)
     {
         if(s.charCodeAt(i)>126)
         {
@@ -92,6 +105,7 @@ function isEnglish(s)
         }
     }
     return true; 
+    */
 }
 
 //按下键盘时，关闭窗口
@@ -104,7 +118,7 @@ document.onkeydown=function(e) {
   var key=e.keyCode || e.which;
   //alert(key);
   OnCheckCloseWindow();
-}
+};
 
 //监听鼠标消息
 body.addEventListener("mouseup",OnDictEvent, false);
@@ -139,7 +153,7 @@ function OnCheckCloseWindow() {
     last_div = null;
     return true;
   }
-  return false
+  return false;
 }
 
 //唤起取词
@@ -212,8 +226,8 @@ function createPopUp(word,senctence, x, y, screenX, screenY) {
   
   last_word = word;
   
-  var frame_height = 220;
-  var frame_width = 280;
+  var frame_height = 300;
+  var frame_width  = 250;
   var padding = 10;
   
   var frame_left = 0;
@@ -221,10 +235,25 @@ function createPopUp(word,senctence, x, y, screenX, screenY) {
   
   frame = document.createElement('iframe');
   //frame.src = 'http://dict.cn/mini.php?q=' + escape(word);
-  frame.src = 'http://dict.cn/mini.php?q=' + word;
-  frame.id = 'OnlineDict';
-  
-    
+  //frame.src = 'http://dict.cn/mini.php?q=' + word;
+	var src ;
+	var serviceId=optVal("dictionary_service");
+	if(!serviceId){
+		serviceId = 0;
+	}
+	
+	switch ( serviceId ){
+		case 0: //google
+			src = chrome.extension.getURL("googledictionary.html")+"?"+word;
+			break;
+		case 1: //dict
+			src = 'http://dict.cn/mini.php?q=' + word;
+			frame.style.backgroundColor ="#D9D9D9";
+			break;
+	}
+	
+	frame.src = src;
+	frame.id = 'OnlineDict';
   var screen_width = screen.availWidth;
   var screen_height = screen.availHeight;
   
@@ -248,16 +277,22 @@ function createPopUp(word,senctence, x, y, screenX, screenY) {
   frame.style.width = frame_width + 'px';
   frame.style.height = frame_height + 'px';
   //frame.style.border = '1px solid ' + colors[optVal("color_type")][1];//optVal("links_color");
-  frame.style.border = '1px solid #767676';
+  frame.style.border = '0px'; //solid #767676';
   frame.style.zIndex = '65535';
   //frame.style.backgroundColor = colors[optVal("color_type")][0];//'#DCF6DB';
-  frame.style.backgroundColor = '#EFF0F6';
-  frame.style.font="Georgia, serif";
+  //frame.style.backgroundColor = '#EFF0F6';
+  //frame.style.font="Georgia, serif";
   frame.style.borderRadius ="4px";// round border,not support IE
-  body.appendChild(frame);
+
+	//frame.innerHTML = "正在载入...";
+	
+	body.appendChild(frame);
+	
+	
+	
   //SaveNewWord(word,senctence,window.location.href,0);
-  
   last_frame = frame;
+	
   //return;
   
   var div_toolbar = document.createElement('div');
@@ -271,15 +306,22 @@ function createPopUp(word,senctence, x, y, screenX, screenY) {
   div_toolbar.style.align = 'right';
   div_toolbar.style.position = 'absolute';
   div_toolbar.style.width = frame.style.width;  
-  div_toolbar.style.fontSize = "8px;"
+  div_toolbar.style.fontSize = "8px;";
   //div_toolbar.style.height = '20px';
   div_toolbar.style.border = '1px solid #767676';//'1px solid ' + colors[optVal("color_type")][1];
   div_toolbar.style.backgroundColor = '#EFF0F6';//colors[optVal("color_type")][1];//'#3A3';
   div_toolbar.style.zIndex = '65535';
   div_toolbar.style.display = 'none';
+	div_toolbar.name          = word;
+	div_toolbar.id            = 'onlinedictquery';
   body.appendChild(div_toolbar);
   last_div = div_toolbar;
   
+	//给iframe发送消息@todo 有问题.无法接收
+	//console.log("sending");
+	//chrome.extension.sendRequest({query:word});
+	
+
   //document.getElementById('tool_pin' + div_num).addEventListener("mouseup",tool_pin, false);
   //document.getElementById('tool_disable' + div_num).addEventListener("mouseup",tool_disable, false);
   
