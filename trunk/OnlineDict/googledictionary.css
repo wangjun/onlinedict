@@ -1,0 +1,13 @@
+@charset "UTF-8";
+/* CSS Document */
+
+body{max-width:240px;background-color:#D9D9D9;}
+
+#meaning {
+	font:Arial, Helvetica, sans-serif;
+	float:left;
+}
+
+#meaning span{font-weight: bold;font-family: Arial, sans-serif;line-height: 1.5em;clear:both;}
+
+#meaning em{font-size:0.85em;}
