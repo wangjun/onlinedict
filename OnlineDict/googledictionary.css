@@ -8,6 +8,12 @@ body{max-width:240px;background-color:#D9D9D9;}
 	float:left;
 }
 
-#meaning span{font-weight: bold;font-family: Arial, sans-serif;line-height: 1.5em;clear:both;}
+a{
+	color:#000;
+}
+
+#meaning span{font-weight: bold;line-height: 1.5em;clear:both;
+
+font-family:Georgia, "Times New Roman", Times, serif;}
 
 #meaning em{font-size:0.85em;}

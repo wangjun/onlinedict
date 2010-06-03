@@ -45,12 +45,14 @@ jQuery.getJSON(src+"&callback=?",　function(data)　{　
 　　	
 	//alert("query:　"　+　data.query);
 	//document.write( $.dump(data) );
-	changeDictionaryTitle("key",data.query);
+	var link = "http://www.google.com/dictionary?langpair="+sl+"|"+tl+"&q="+query+"&hl=en&aq=f";
+	changeDictionaryTitle("key",
+	"<a href='"+link+"'>"+data.query+"</a>");
 	if(data.primaries){
 		var primary = data.primaries[0];
 		primaryDefines(primary);
 	} else if(data.webDefinitions){
-		alert("web");
+		//alert("web");
 		webDefine(data.webDefinitions[0]);
 	} else {
 		document.getElementById("meaning").innerHTML="online-dict 不能找到单词释义.";
@@ -116,7 +118,7 @@ function primaryDefines(primary){
 			if(en[i]){
 				html+="<em>" +en[i] +"</em>";
 			}
-				alert(html);
+				//alert(html);debug
 				meanings.innerHTML += html;
 			}
 		}
