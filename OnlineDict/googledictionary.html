@@ -47,7 +47,7 @@ jQuery.getJSON(src+"&callback=?",　function(data)　{　
 	//document.write( $.dump(data) );
 	var link = "http://www.google.com/dictionary?langpair="+sl+"|"+tl+"&q="+query+"&hl=en&aq=f";
 	changeDictionaryTitle("key",
-	"<a href='"+link+"'>"+data.query+"</a>");
+	"<a href='"+link+"' target='_blank'>"+data.query+"</a>");
 	if(data.primaries){
 		var primary = data.primaries[0];
 		primaryDefines(primary);
@@ -109,7 +109,11 @@ function primaryDefines(primary){
 				span.innerHTML=partOfSpeech;
 			define.appendChild(span);
 			var meanings = document.createElement("div");
-		for( i in en ){
+			
+			
+			
+			
+		for( var i=0;zh[i]||en[i];i++ ){
 			var html;
 			html="<li>";
 			if (zh[i]){
@@ -118,7 +122,7 @@ function primaryDefines(primary){
 			if(en[i]){
 				html+="<em>" +en[i] +"</em>";
 			}
-				//alert(html);debug
+				//alert(html+"n");//debug
 				meanings.innerHTML += html;
 			}
 		}
@@ -167,7 +171,7 @@ function ListDefine( defines , language ){
 			}
 		}
 	
-	//document.write( $.dump(en_defines) );
+	//document.write( $.dump(result) );
 	return result;
 }
 /*
