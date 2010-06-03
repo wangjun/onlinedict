@@ -1,7 +1,14 @@
 @charset "UTF-8";
 /* CSS Document */
+* {
+	max-width:240px;;
+}
 
 body{max-width:240px;background-color:#D9D9D9;}
+
+#main{width:240px;}
+
+
 
 #meaning {
 	font:Arial, Helvetica, sans-serif;
