@@ -6,9 +6,9 @@ var Class = {
   create: function() {
     return function() {
       this.initialize.apply(this, arguments);
-    }
+    };
   }
-}
+};
 var DictDB=Class.create();
 DictDB.prototype=
 {
@@ -100,7 +100,7 @@ DictDB.prototype=
                             id: row['id'],
                             word: row['word'],
                             info: row['info'],
-                            addTime:row['addTime']
+                            addTime:row['addTime'],
                         };
                 }
                 return fun(w);
