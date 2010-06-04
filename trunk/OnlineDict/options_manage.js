@@ -7,7 +7,8 @@
     "dict_disable": ["checked", false],
     "ctrl_only": ["checked", false],
     "english_only": ["checked", true],
-		"dictionary_service":["selectedIndex",0]
+		"dictionary_service":["selectedIndex",0],
+		"custom_service":["value","http://dict.cn/mini.php?q=%s"]
 };
 
 function getColorType()
@@ -20,6 +21,7 @@ function getColorType()
         }
     }
 }
+
 function setColorType(iType)
 {
     document.all.back_color[iType].checked = true;
@@ -43,6 +45,9 @@ function save_options()
 				case "selectedIndex":
 						Options[key][1] = document.getElementById(key).selectedIndex;
 						break;
+				case "value":
+						Options[key][1] = document.getElementById(key).value;
+					break;
         }
 
     }
@@ -74,6 +79,9 @@ function restore_options()
 						case "selectIndex":
 								if(localOptions[key][1]) element.selectIndex = localOptions[key][1];
 								else element.selectIndex = 0;
+						case "value":
+								if(localOptions[key][1]) element.value = localOptions[key][1];
+								else element.value = "";
             }
         }
     }

@@ -38,10 +38,18 @@
 
 <tr><td>
 	<select id="dictionary_service">
-		<option value="0">Google Dictionary</option>
-		<option value="1">Dict(海词)</option>
-	</select>
+		<option value="0">自定义取词服务</option>
+		<option value="1">Google Dictionary</option>
+		<option value="2">Dict(海词)</option>
+	</select>取词服务器
 </td><tr>
+<tr><td>
+	<input type="text" id="custom_service">
+</tr></td>
+<tr><td>
+	将%s插入到网址中的相应位置取代查询的单词,比如http://dict.cn/mini.php?q=%s
+</tr></td>
+
 <td style="display:none"><span>配色方案:</span> 
 <input id="back_color" type="radio" name="back_color" value="0" />
 <label for="back_color">草绿</label>
