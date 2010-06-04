@@ -19,7 +19,8 @@
  "content_scripts": [{
     "matches": ["http://*/*", "https://*/*"],
     "css": ["frame.css"],
-    "js": ["lookup.js"]
+    "js": ["lookup.js"],
+		"all_frames":true
   }, {
     "matches": ["http://dict.cn/mini.php?q=?*&source=unofficial_chrome_ext*"],
     "js": ["cleanup.js"]
