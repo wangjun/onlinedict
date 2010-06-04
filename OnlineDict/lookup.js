@@ -241,19 +241,26 @@ function createPopUp(word,senctence, x, y, screenX, screenY) {
 	if(!serviceId){
 		serviceId = 0;
 	}
-	
 	switch ( serviceId ){
-		case 0: //google
+		case 0:
+			if( optVal("custom_service").match("%s") ){
+				src = optVal("custom_service").replace("%s",word);
+				break;
+			}
+			else serviceId = 1;
+		case 1: //google
 			src = chrome.extension.getURL("googledictionary.html")+"?"+word;
 			break;
-		case 1: //dict
+		case 2: //dict
 			src = 'http://dict.cn/mini.php?q=' + word;
 			frame.style.backgroundColor ="#D9D9D9";
 			break;
 	}
 	
+	
 	frame.src = src;
 	frame.id = 'OnlineDict';
+	frame.class ="OnineDict";
   var screen_width = screen.availWidth;
   var screen_height = screen.availHeight;
   
@@ -277,7 +284,7 @@ function createPopUp(word,senctence, x, y, screenX, screenY) {
   frame.style.width = frame_width + 'px';
   frame.style.height = frame_height + 'px';
   //frame.style.border = '1px solid ' + colors[optVal("color_type")][1];//optVal("links_color");
-  frame.style.border = '0px'; //solid #767676';
+  //frame.style.border = '0px'; //solid #767676';
   frame.style.zIndex = '65535';
   //frame.style.backgroundColor = colors[optVal("color_type")][0];//'#DCF6DB';
   //frame.style.backgroundColor = '#EFF0F6';

@@ -1,5 +1,25 @@
-﻿.OnlineDict {
-  border: 0px #6CAE70 double;
-  background: #7CBE80;
-  border-radius: 10px;
+.OnlineDict {
+background: #FFFFBF;
+border: 2px solid #E1C642;
+border-bottom-left-radius: 5px 5px;
+border-bottom-right-radius: 5px 5px;
+border-top-left-radius: 5px 5px;
+border-top-right-radius: 5px 5px;
+color: black;
+font-family: arial, sans-serif;
+font-size: 13px;
+font-style: normal;
+font-variant: normal;
+font-weight: normal;
+height: auto;
+left: 267.5px;
+line-height: normal;
+margin: 0px;
+opacity: 0.96;
+padding: 7px;
+position: absolute;
+text-align: left;
+top: 101px;
+width: 250px;
+z-index: 99997;
 }
