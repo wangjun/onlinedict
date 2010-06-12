@@ -12,7 +12,6 @@ var colors=[["#DCF6DB","#3A3"],
     ["#F2F2F2","#808080"],
     ["#E9ACF2","#F57A3D"]
 ];
-var query ;
 
 chrome.extension.sendRequest(
     {
@@ -281,16 +280,16 @@ function createPopUp(word,senctence, x, y, screenX, screenY) {
   //frame.style.left = x + 'px';
   //frame.style.top = y + div_height*3/4 + 'px';
   frame.style.position = 'absolute';
-  frame.style.width = frame_width + 'px';
-  frame.style.height = frame_height + 'px';
+  frame.style.width = "100%";//frame_width + 'px';
+ 	frame.style.height = frame_height + 'px';
   //frame.style.border = '1px solid ' + colors[optVal("color_type")][1];//optVal("links_color");
-  //frame.style.border = '0px'; //solid #767676';
+  frame.style.border = '0px'; //solid #767676';
   frame.style.zIndex = '65535';
   //frame.style.backgroundColor = colors[optVal("color_type")][0];//'#DCF6DB';
   //frame.style.backgroundColor = '#EFF0F6';
   //frame.style.font="Georgia, serif";
-  frame.style.borderRadius ="4px";// round border,not support IE
-
+  //frame.style.borderRadius ="4px";// round border,not support IE
+	frame.scrolling="auto";
 	//frame.innerHTML = "正在载入...";
 	
 	body.appendChild(frame);

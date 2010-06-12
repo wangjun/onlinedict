@@ -1,0 +1,75 @@
+body{
+	margin 0px;
+}
+
+#main {
+-webkit-box-shadow: #C8C8C8 0px 4px 18px 0px;
+background-attachment: scroll;
+background-clip: border-box;
+background-color: #D9D9D9;
+background-image: none;
+background-origin: padding-box;
+border-bottom-color: #E5E5E5;
+border-bottom-left-radius: 5px;
+border-bottom-right-radius: 5px;
+border-bottom-style: solid;
+border-bottom-width: 1px;
+border-left-color: #E5E5E5;
+border-left-style: solid;
+border-left-width: 1px;
+border-right-color: #E5E5E5;
+border-right-style: solid;
+border-right-width: 1px;
+border-top-color: #E5E5E5;
+border-top-left-radius: 5px;
+border-top-right-radius: 5px;
+border-top-style: solid;
+border-top-width: 1px;
+color: #333;
+display: block;
+font-family: 'Lucida Grande', Verdana, Arial, 'Bitstream Vera Sans', sans-serif;
+font-size: 11px;
+font-style: normal;
+font-variant: normal;
+font-weight: normal;
+height: auto;
+left: auto;
+line-height: normal;
+margin-bottom: 0px;
+margin-left: 8px;
+margin-right: 0px;
+margin-top: 0px;
+padding-bottom: 40px;
+padding-left: 16px;
+padding-right: 16px;
+padding-top: 16px;
+position: static;
+width: 240px;
+max-width:240px;
+
+}
+
+@charset "UTF-8";
+/* CSS Document */
+* {
+	max-width:240px;;
+}
+
+#meaning {
+	font:Arial, Helvetica, sans-serif;
+}
+
+a{
+	color:#000;
+}
+
+#meaning span{
+	font-weight: bold;
+	line-height: 1.5em;
+	clear:both;
+	font-family:Georgia, "Times New Roman", Times, serif;
+}
+
+#meaning em{
+	font-size:0.85em;
+	}
