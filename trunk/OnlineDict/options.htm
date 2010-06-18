@@ -36,6 +36,7 @@
 </td>
 </tr>
 
+<!--
 <tr><td>
 	<select id="dictionary_service">
 		<option value="0">自定义取词服务</option>
@@ -49,8 +50,21 @@
 <tr><td>
 	将%s插入到网址中的相应位置取代查询的单词,比如http://dict.cn/mini.php?q=%s
 </tr></td>
+!-->
+<tr><td>
+选择OnlineDict所用的词典：
+  <br/>
+  <input type="radio" id="dict_service_1" name="dict_service"/>
+  <label for="dict_service_1">Google Dictionary</label>
+  <br />
+  <input type="radio" id="dict_service_2" name="dict_service"/>
+  <label for="dict_service_2">Dict.cn(海词)</label>
+  <br />
+  <input type="radio" id="dict_service_0" name="dict_service"/>
+  <label for="dict_service_0">自定义词典：<input type="text" id="custom_service"><br/> <i>将%s插入到网址中的相应位置，取代查询的单词。例如：http://dict.cn/mini.php?q=%s</i></label>
+</td></tr>
 
-<td style="display:none"><span>配色方案:</span> 
+<td><span>配色方案:</span> 
 <input id="back_color" type="radio" name="back_color" value="0" />
 <label for="back_color">草绿</label>
 <input id="back_color" type="radio" name="back_color" value="1" />
