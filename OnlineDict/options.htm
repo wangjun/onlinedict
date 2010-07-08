@@ -4,14 +4,14 @@
 <head>
 <meta name="generator" content="HTML Tidy, see www.w3.org">
 <meta http-equiv="Content-Type" content=
-"text/html; charset=iso-8859-15">
+"text/html; charset=UTF-8">
 <title>OnlineDict 选项页</title>
 <link rel="stylesheet" type="text/css" href="options.css">
+<script type="text/javascript" src="jquery-1.4.js"></script>
 <script type="text/javascript" src="options_manage.js">
 </script>
 </head>
 <body onload="restore_options();">
-<div id="main_container">
 <div id="main_container">
 
 <table width="100%" valign="top"><tr><td>
@@ -54,17 +54,19 @@
 <tr><td>
 选择OnlineDict所用的词典：
   <br/>
-  <input type="radio" id="dict_service_1" name="dict_service"/>
+  <input type="radio" id="dict_service_1" name="dictionary_service" value="1"/>
   <label for="dict_service_1">Google Dictionary</label>
   <br />
-  <input type="radio" id="dict_service_2" name="dict_service"/>
+  <input type="radio" id="dict_service_2" name="dictionary_service" value="2"/>
   <label for="dict_service_2">Dict.cn(海词)</label>
   <br />
-  <input type="radio" id="dict_service_0" name="dict_service"/>
+  <input type="radio" id="dict_service_0" name="dictionary_service" value="0"/>
   <label for="dict_service_0">自定义词典：<input type="text" id="custom_service"><br/> <i>将%s插入到网址中的相应位置，取代查询的单词。例如：http://dict.cn/mini.php?q=%s</i></label>
 </td></tr>
 
-<td><span>配色方案:</span> 
+<!--
+
+<tr><td><span>配色方案:</span> 
 <input id="back_color" type="radio" name="back_color" value="0" />
 <label for="back_color">草绿</label>
 <input id="back_color" type="radio" name="back_color" value="1" />
@@ -73,8 +75,9 @@
 <label for="back_color">银灰</label>
 <input id="back_color" type="radio" name="back_color" value="3" />
 <label for="back_color">水晶紫</label>
-</td>
-</tr>
+</td></tr>
+
+-->
 
 </table>
 
