@@ -240,7 +240,7 @@ function createPopUp(word,senctence, x, y, screenX, screenY) {
     var serviceId=optVal("dictionary_service");
 
     if(!serviceId){
-        serviceId = '1';
+        serviceId = '2';
     }
 
     //alert(serviceId);
