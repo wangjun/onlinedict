@@ -238,12 +238,12 @@ function createPopUp(word,senctence, x, y, screenX, screenY) {
     //frame.src = 'http://dict.cn/mini.php?q=' + word;
     var src ;
     var serviceId=optVal("dictionary_service");
+
     if(!serviceId){
-        serviceId = 1;
+        serviceId = '1';
     }
 
     //alert(serviceId);
-
     switch ( serviceId ){
         case '0':
             if( optVal("custom_service").match("%s") ){
@@ -260,6 +260,7 @@ function createPopUp(word,senctence, x, y, screenX, screenY) {
             frame.style.backgroundColor ="#D9D9D9";
             break;
     }
+
 	
 	
     frame.src = src;
@@ -297,7 +298,12 @@ function createPopUp(word,senctence, x, y, screenX, screenY) {
     frame.scrolling = "auto";
     //frame.innerHTML = "正在载入...";
 
+
     body.appendChild(frame) ;
+
+    alert(frame);
+    
+    //window.document.body.style.backgroundColor ="#D9D9D9";
 	
     //SaveNewWord(word,senctence,window.location.href,0);
     last_frame = frame;

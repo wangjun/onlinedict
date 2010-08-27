@@ -3,11 +3,11 @@
     //"background_color": ["color", ""],
     //"links_color": ["color", ""],
     //"text_color": ["color", ""],
-    "color_type":["color_type",0],
+    //"color_type":["color_type",0],
     "dict_disable": ["checked", false],
     "ctrl_only": ["checked", false],
     "english_only": ["checked", true],
-    "dictionary_service":["radio",1],
+    "dictionary_service":["radio",'1'],
     "custom_service":["value","http://dict.cn/mini.php?q=%s"]
 };
 
@@ -63,7 +63,8 @@ function restore_options()
     var localOptions = JSON.parse(localStorage["ColorOptions"]);
     //alert(localStorage["ColorOptions"]);
     //alert(localOptions["color_type"][1]);
-    setColorType(localOptions["color_type"][1]);
+    //setColorType(localOptions["color_type"][1]);
+
     for (key in localOptions)
     {
         optionValue = localOptions[key];
