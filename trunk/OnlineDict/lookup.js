@@ -300,8 +300,6 @@ function createPopUp(word,senctence, x, y, screenX, screenY) {
 
 
     body.appendChild(frame) ;
-
-    alert(frame);
     
     //window.document.body.style.backgroundColor ="#D9D9D9";
 	

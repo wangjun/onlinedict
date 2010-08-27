@@ -24,5 +24,9 @@
   }, {
     "matches": ["http://dict.cn/mini.php?q=?*&source=unofficial_chrome_ext*"],
     "js": ["cleanup.js"]
+  },{
+    "matches": ["http://dict.cn/mini.php?q=*"],
+    "css":["dictcn.css"],
+    "all_frames":true
   }]
 }
