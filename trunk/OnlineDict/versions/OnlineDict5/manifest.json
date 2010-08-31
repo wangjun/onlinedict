@@ -1,0 +1,31 @@
+{"name": "OnlineDict",
+ "version": "5.0",
+ "description": "Click the word in any page, and the translation will show up. ",
+ "icons": { "48": "logo_small.png",
+          "128": "logo.png" },
+ "options_page": "options.htm",
+ "browser_action": {
+    "default_icon": "logo_small.png",
+    "popup": "remember.htm",
+    "default_title":"OnlineDict - Online dictionary extension"
+  },
+  "permissions": [
+    "tabs",
+    "http://*/*",
+    "https://*/*"
+    ],
+  "background_page": "background_page.htm",
+ "content_scripts": [{
+    "matches": ["http://*/*", "https://*/*"],
+    "css": ["frame.css"],
+    "js": ["jquery-1.4.js","lookup.js"],
+		"all_frames":true
+  }, {
+    "matches": ["http://dict.cn/mini.php?q=?*&source=unofficial_chrome_ext*"],
+    "js": ["cleanup.js"]
+  },{
+    "matches": ["http://dict.cn/mini.php?q=*"],
+    "css":["dictcn.css"],
+    "all_frames":true
+  }]
+}
