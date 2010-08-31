@@ -1,0 +1,110 @@
+﻿<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-15"/>
+<title>词库导入工具</title>
+<link rel="stylesheet" type="text/css" href="options.css"/>
+<style type='text/css'>
+	a {
+		font-size: 12px;
+		color: #034B81;
+		text-decoration: none;
+	}
+	a:hover {
+		text-decoration: none;
+	}
+	.lineBlock
+	{
+		margin-bottom: 3px;
+		padding-bottom:3px;
+	}
+	.wordTitle
+	{
+		background-color: #F4F6FC;
+		padding-bottom:3px;
+		padding-top:3px;
+	}
+	.keyWord
+	{
+		display: inline;
+		font-weight: bold;
+		font-size: 16px;
+	}
+	.opBtn
+	{
+		display: inline;
+		float: right;
+		padding-left: 15px;
+	}
+	textarea {
+	width: 100%;
+	padding: 5px;
+	font-family: Tahoma, sans-serif;
+	}
+</style>
+<script type="text/javascript" src="newwords.js"></script>
+<script> 
+var db=new DictDB();
+db.init();
+
+function getid(element) {
+  //if (typeof element == 'string')
+   return document.getElementById(element);
+}
+
+function ToJSON(){
+    db.GetVocabulary(getid('input_like').value,function(res){
+        var elm = getid('div_words');
+        
+		//var strJSON = JSON.stringify(res);
+        var html = "已导入词汇：<br/>";
+        for(var i = 0;i<res.length;i++)
+        {
+            html += res[i].word + "<br/>"
+        }
+		getid('div_res').innerHTML = html;
+    }
+    );
+}
+function ReadJSON(){
+	var elm = getid('div_words');
+    var strRaw = elm.value;
+    var lines = strRaw.split("\n");
+    var html = "已导入词汇：<br/>";
+    var words = [];
+    for(var i=0;i<lines.length;i++)
+    {
+        lines[i] = lines[i].replace(/^\s+|\s+$/g,"");
+        if(lines[i].length>0)
+        {
+            //db.NewVocabulary(lines[i],"");
+            words.push(lines[i]);
+            html += ": " + lines[i] + "<br/>";
+        }
+    }
+    getid('div_res').innerHTML = html;
+    db.ImportVocabulary(words);
+    return;
+}
+</script>
+</head>
+<body>
+	<div id="debug"></div>
+    <div id="main_container">
+    
+        <table cellpadding="5" class="settings-table">
+            <tr>
+                <td valign="top" width="55%">
+					词汇表导入：每行一个单词<br/>
+                    <input type="button" onclick="ReadJSON()" value="导入"/><br/>
+                    <input type="button" onclick="ToJSON()" value="导出json"/><input id="input_like" value="a%"/>
+					<textarea class="text" name="comment" rows="30" id="div_words"></textarea> 
+                </td>
+                <td valign="top">
+                    <div id="div_tags">
+                    </div>
+                    <div id="div_res">
+                    </div>
+                </td>
+            </tr>
+        </table>
+</body>
+</html>

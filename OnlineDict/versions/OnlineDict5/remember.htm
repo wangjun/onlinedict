@@ -1,0 +1,145 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-15">
+    <title>OnlineDict 选项页</title>
+    <link rel="stylesheet" type="text/css" href="options.css">
+    <link rel="stylesheet" type="text/css" href="jqac.css">
+<script type="text/javascript" src="newwords.js"></script>
+<script type="text/javascript" src="jquery-1.4.js"></script>
+<script type="text/javascript" src="remember.js"></script>
+<script> 
+
+//从本地加载文件
+function LoadLocalPage(localFile,funSuccess,funError)
+{
+    $.ajax({
+      url:localFile,
+      type: 'GET',
+      success: function(data) {
+         funSuccess(data);
+      },
+      error: function(XMLHttpRequest, textStatus, errorThrown){
+         funError(textStatus);
+      }
+    });
+}
+function ImportData(txtData){
+    var lines = txtData.split("\n");
+    var words = [];
+    for(var i=0;i<lines.length;i++)
+    {
+        lines[i] = lines[i].replace(/^\s+|\s+$/g,"");
+        if(lines[i].length>0)
+        {
+            words.push(lines[i]);
+        }
+    }
+    db.ImportVocabulary(words);
+    return words;
+}
+function checkUpdateVocabulary()
+{
+    db.GetVocabularyCount(function(count){
+        if(count>0)
+        {
+            getid("span_info").innerHTML = "";
+            //已经有数据，不用导入了
+            return;
+        }
+        getid("span_info").innerHTML = "正在导入词汇表……";
+        LoadLocalPage('/vocabulary.txt',function (data){
+            var words = ImportData(data);
+            getid("span_info").innerHTML = words.length + "个词汇已导入";
+        });
+    });
+}
+
+function getSuguest(str,cont){ 
+    db.GetVocabulary(str + "%", function(words){
+        var res = [];
+        for(var i = 0;i<words.length;i++)
+        {
+            res.push({id:words[i].id,value:words[i].word});
+        }
+        cont(res);
+    });
+}
+function onSuguestFinished(obj){ 
+  WebTranslate();
+}
+//设置默认按钮
+function   SubmitKeyClick(button)     
+{       
+    if   (event.keyCode   ==   13)     
+    {   
+        document.getElementById(button).focus();           
+        document.getElementById(button).click();   
+    }   
+}   
+$(document).ready(function(){
+	ShowPage(currentpage);
+	UpdateWordCounts();
+    checkUpdateVocabulary();
+    
+    $('#input_word').autocomplete({minchars:2,height:500,delay:0,callback:onSuguestFinished,ajax_get:getSuguest});
+ });
+</script>
+</head>
+<body>
+	<div id="debug"></div>
+    <div id="main_container">
+        <table width="98%" valign="top">
+            <tr>
+                <td>
+                    <h1>
+                        <img src="logo.png" width="30" />OnlineDict 单词学习助手</h1>
+                </td>
+                <td align="right">
+                    
+                        <a href="./remember.htm" target="_blank">首页</a> | 
+						<a href="./options.htm" target="_blank">选项</a> | 
+						<a href="http://code.google.com/p/onlinedict/" target="_blank">OnlineDict主页</a> 
+							<br/><br/><font color=green><span id='span_newwords'>新单词：0个</span>，<span id='span_rememberwords'>记住了：0个</span><br/><span id='span_info'>导入词汇表……</span></font>
+                </td>
+            </tr>
+            <tr><td>
+<input id="input_word" onkeydown="SubmitKeyClick('btn_websearch')"/>
+<input type="button" value="网络查词" onclick="WebTranslate();" id="btn_websearch"/>
+</td><td></td></tr>
+</table>
+<div id="div_webTranslate"></div>
+        <table cellpadding="5" class="settings-table">
+            <tr>
+                <td valign="top" width="75%">
+                    <table width="100%">
+                        <tr>
+                            <td>
+                                排序:
+                                <input name="rdOrderKey" type="radio" value="translateCount" checked="true" onclick="SetOrder()">取词次数
+                                <input name="rdOrderKey" type="radio" value="addTime" onclick="SetOrder()">取词时间
+                                <input name="rdOrderKey" type="radio" value="word" onclick="SetOrder()">单词
+								&nbsp;&nbsp;&nbsp;&nbsp;
+								<input name="rdOrder" type="radio" checked="true" value="desc" onclick="SetOrder()">降序
+								<input name="rdOrder" type="radio" value="asc" onclick="SetOrder()">升序
+                            </td>
+                            <td align="right">
+                                <input type="button" value="上一页" onclick="ShowPrevPage()" /><input type="button" value="下一页"
+                                    onclick="ShowNextPage()" />
+                            </td>
+                            <td align="left">
+                                <div id="itemcount" align="left">
+                                    共N条</div>
+                            </td>
+                        </tr>
+                    </table>
+                    <div id="div_words">
+                    </div>
+                </td>
+            </tr>
+        </table>
+</body>
+<script src="lookup.js" type="text/javascript"></script> 
+<script type="text/javascript" src="jquery.autocomplete-1.4.2.js"></script>
+</html>
