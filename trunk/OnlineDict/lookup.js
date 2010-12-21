@@ -89,7 +89,7 @@ function getWordIndex(word) {
 
 function isEnglish(s)
 {	
-    var patrn=/^[A-Za-z]+$/;
+    var patrn=/^[A-Za-z ]+$/;
     if (!patrn.exec(s)) {
         return false;
     }else{
